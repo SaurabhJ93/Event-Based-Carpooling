@@ -1,0 +1,1 @@
+To setup the repo use ```npm install```
