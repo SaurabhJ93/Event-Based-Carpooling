@@ -1,7 +1,6 @@
 import requests
 from requests.exceptions import HTTPError
 from Seat_Geek_API_Interfaces import SG_getallEvents_Interface 
-#import Seat_Geek_API_Interfaces as SG_Events_Interfaces
 
 class Seat_Geek_Api(SG_getallEvents_Interface):
     def __init__(self):
