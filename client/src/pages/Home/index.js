@@ -2,20 +2,20 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import styled from "styled-components";
-import background from "../../assests/background.jpg";
+import background from "../../assests/background-event.jpg";
 import { useHistory } from "react-router-dom";
 
 const Styles = styled.div`
  .jumbo{
     // background: url(${background}) no-repeat fixed bottom;
-    background-color: #33B7FF;
+    background-color: #7eb3c794;
     color:black;
     margin-top: 0px;
     margin-bottom: 2px;
     max-width: 80%;
     margin-left: 12%;
     &:hover{
-        background-color: #3089C1;
+        background-color: #69a8af;
     }
  };
  .container{

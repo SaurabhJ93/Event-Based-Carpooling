@@ -1,11 +1,80 @@
 import React from 'react';
+import userImg from "../../assests/avataar.svg";
+import { Styled } from "../../assests/styles/userStyle.js";
 
-const User = () => {
-    return(
-        <div>
-            <h1>Welcome to User page</h1>
-        </div>
-    )
+const users = {
+    name: "Claude Timothy",
+    address: "Barbara B. Mann Performing Arts Hall,FL",
+    contact: "8457098904",
+    email: "ctimothy0@unc.edu",
+};
+
+const offeredRide = [];
+let i = 0;
+for (i = 1; i <= 10; i++) {
+    offeredRide.push(`Offer ${i}`);
 }
 
+const requestedRide = [];
+let j = 0;
+for (j = 1; j <= 5; j++) {
+    requestedRide.push(`Request ${j}`);
+}
+
+const User = () => {
+    return (
+        <Styled>
+            <div className="container">
+                <div className="row">
+                    <div className="user-data col-sm-4" >
+                        <img class="masthead-avatar mb-5" src={userImg} alt="" />
+                        <div >
+                            <p class="masthead-name text-uppercase mb-2" >{users.name}</p>
+                            <p class="mb-2">{users.contact}</p>
+                            <p class="mb-2">{users.email}</p>
+                            <p class="mb-2">{users.address}</p>
+                        </div>
+                        <button type="button" class="btn btn-dark btn-lg">
+                            Edit details
+                     </button>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="user-offered-rides">
+                            <p className="heading-req">Your offered rides</p>
+                            <ul class="list-group">
+                                {offeredRide.map(ride => (
+                                    <li class="list-group-item bg-light">
+                                        <span class="float-left p-rider">{ride}</span>
+                                        <button type="button" class="btn btn-dark btn-sm float-right font-weight-bold">
+                                            Decline
+                                        </button>&nbsp;
+                                        <button type="button" class="btn btn-dark btn-sm float-right mr-2 font-weight-bold">
+                                            Accept
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="user-requested-rides">
+                            <p className="heading-req">Your requested rides</p>
+                            <ul class="list-group">
+                                {requestedRide.map(ride => (
+                                    <li class="list-group-item bg-light">
+                                        <p class="p-rider">{ride}</p>
+                                        <p class=" p-rider">Name, address and other details</p>
+                                        <span class="text-warning float-right">Pending</span>
+                                        <span class="text-danger float-right mr-2">Declined</span>
+                                        <span class="text-success float-right mr-2">Accepted</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Styled>
+    );
+};
 export default User;
