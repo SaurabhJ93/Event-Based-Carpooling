@@ -14,7 +14,7 @@ const events = {
 
 const usersRide = [];
 let i = 0;
-for (i = 1; i <= 10; i++) {
+for (i = 1; i <= 2; i++) {
   usersRide.push(`Carpool ${i}`);
 }
 

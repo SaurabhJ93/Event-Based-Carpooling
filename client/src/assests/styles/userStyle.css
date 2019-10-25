@@ -1,6 +1,7 @@
     .container-fluid{
         background: url("../../assests/background-event.jpg") no-repeat fixed bottom;
         max-width: inherit;
+        min-height: 85vh;
         } 
     
     .masthead-avatar {

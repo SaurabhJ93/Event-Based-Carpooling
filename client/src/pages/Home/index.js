@@ -21,6 +21,7 @@ const Styles = styled.div`
  .container{
     background: url(${background}) no-repeat fixed bottom;
     max-width: inherit;
+    min-height: 85vh;
  };
 `;
 
