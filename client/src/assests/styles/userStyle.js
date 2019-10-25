@@ -15,7 +15,7 @@ export const Styled = styled.div`
         margin: 30px;
     }
 
-    .user-data div{
+    .user-data p{
     font-weight: bold;
     font-family: sans serif;
     font-size: 1.5em;
@@ -26,6 +26,9 @@ export const Styled = styled.div`
         margin: 30px;
     }
 
+    .i-am-centered{
+        margin: auto;     
+    }
     .user-offered-rides,.user-requested-rides{
     background-color:#af4b2c54;
     border: 2px solid grey;

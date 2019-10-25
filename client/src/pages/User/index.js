@@ -26,19 +26,23 @@ const User = () => {
         <Styled>
             <div className="container">
                 <div className="row">
-                    <div className="user-data col-sm-4" >
+                    <div className="col-sm-4 text-right" >
                         <img class="masthead-avatar mb-5" src={userImg} alt="" />
-                        <div >
-                            <p class="masthead-name text-uppercase mb-2" >{users.name}</p>
-                            <p class="mb-2">{users.contact}</p>
-                            <p class="mb-2">{users.email}</p>
-                            <p class="mb-2">{users.address}</p>
-                        </div>
+                    </div>
+                    <div className="user-data col-sm-4">
+                        <p class="masthead-name text-uppercase mb-2 mt-4" >{users.name}</p>
+                        <p class="mb-2">{users.contact}</p>
+                        <p class="mb-2">{users.email}</p>
+                        <p class="mb-2">{users.address}</p>
+                    </div>
+                    <div className="col-sm-4 justify-content-center align-self-center">
                         <button type="button" class="btn btn-dark btn-lg">
-                            Edit details
+                            Edit Details
                      </button>
                     </div>
-                    <div class="col-sm-4">
+                </div>
+                <div className="row mt-5 w-75 i-am-centered">
+                    <div class="col-sm-6">
                         <div class="user-offered-rides">
                             <p className="heading-req">Your offered rides</p>
                             <ul class="list-group">
@@ -56,7 +60,7 @@ const User = () => {
                             </ul>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="user-requested-rides">
                             <p className="heading-req">Your requested rides</p>
                             <ul class="list-group">
