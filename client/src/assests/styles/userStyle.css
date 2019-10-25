@@ -1,11 +1,5 @@
-import styled from "styled-components";
-import background from "../../assests/background-event.jpg";
-
-export const Styled = styled.div`
-
-    .container{
-        //background-color: #ABD7F2!important;
-        background: url(${background}) no-repeat fixed bottom;
+    .container-fluid{
+        background: url("../../assests/background-event.jpg") no-repeat fixed bottom;
         max-width: inherit;
         } 
     
@@ -58,5 +52,3 @@ export const Styled = styled.div`
     font-size: 1.2em;
     font-weight:bold;
 }
-
-`;
