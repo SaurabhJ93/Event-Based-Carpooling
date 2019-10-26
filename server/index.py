@@ -3,7 +3,7 @@ import Seat_Geek_API as SGE
 
 app = Flask(__name__)
 
-@app.route('/index', methods=['GET'])
+@app.route('/index', methods=['GET']) #handles route of home page in backend send required data to react
 def index():
     events = SGE.Seat_Geek_Api()
     eventsdata = events.getallEvents()

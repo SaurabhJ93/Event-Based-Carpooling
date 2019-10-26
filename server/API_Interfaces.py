@@ -1,6 +1,6 @@
 from abc import ABC,abstractmethod #this is imported to declare class as Abstract class and methods as abstract methods
 
-#This file consists of Interface classes
+#This file consists of Interface class
 class API_get_Interface(ABC):
     def getallEvents(self): pass
     def getEvent(self, eventId): pass
