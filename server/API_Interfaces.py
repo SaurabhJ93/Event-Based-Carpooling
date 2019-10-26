@@ -1,6 +1,6 @@
 from abc import ABC,abstractmethod #this is imported to declare class as Abstract class and methods as abstract methods
 
-class SG_getallEvents_Interface(ABC):
+class API_getallEvents_Interface(ABC):
     @abstractmethod
     def getallEvents(self): pass
 

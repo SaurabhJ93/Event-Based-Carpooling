@@ -7,7 +7,7 @@ app = Flask(__name__)
 def index():
     events = SG.Seat_Geek_Api()
     eventsdata = events.getallEvents()
-    return eventsdata["events"][0]
+    return eventsdata
 
 if __name__ == '__main__':
     app.run(host="localhost", debug=True, port=5000)
