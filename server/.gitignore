@@ -1,2 +1,3 @@
 #Ignoring venv folder and respective files
 venv/*
+__pycache__/*
