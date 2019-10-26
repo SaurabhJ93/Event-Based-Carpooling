@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, json
-import Seat_Geek_Event as SGE
+import Seat_Geek_API as SGE
 
 app = Flask(__name__)
 
