@@ -4,6 +4,7 @@ import Jumbotron from "react-bootstrap/Jumbotron";
 import styled from "styled-components";
 import background from "../../assests/background-event.jpg";
 import { useHistory } from "react-router-dom";
+import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
 
 const Styles = styled.div`
  .jumbo{
@@ -11,7 +12,7 @@ const Styles = styled.div`
     background-color: #7eb3c794;
     color:black;
     margin-top: 0px;
-    margin-bottom: 2px;
+    margin-bottom: 5px;
     max-width: 80%;
     margin-left: 12%;
     &:hover{
@@ -23,17 +24,25 @@ const Styles = styled.div`
     max-width: inherit;
     min-height: 85vh;
  };
+
+ .jumbo h2{
+  font-size: 30px;
+}
+ .jumbo p{
+   font-size: 18px;
+ }
+
+ .jumbo ul li{
+   list-style-type: none;
+ }
+
 `;
 
-// Temporary class for generating events
-const tempforevents = [];
-let i = 0;
-for (i = 0; i < 5; i++) {
-  tempforevents.push(`Event number ${i}`);
-}
-
 const Home = () => {
+  
   let history = useHistory();
+  const url = "http://localhost:5000/index"; //URL of flask/backend server
+  const [Events, hasErrors] = useFetch(url); // to call flask/backend server
 
   function handleClick() {
     history.push("/event");
@@ -42,13 +51,23 @@ const Home = () => {
   return (
     <Styles>
       <div className="container">
-        {tempforevents.map(event => (
-          <Jumbotron className="jumbo" onClick={handleClick}>{event}</Jumbotron>
+        {Events.map(event => ( //Looping through events to populate data on the jumbotron
+          <Jumbotron className="jumbo" onClick={handleClick}>
+            <h2> {event.title} </h2>
+            <p> Performers:
+              <ul>
+                {event.performers.map(performer => ( // looping through performers if there are multiple
+                  <li> {performer.name} </li>
+                ))}
+              </ul>
+            </p>
+                <p> Date & Time: {event.datetime_utc.replace('T','  ')} </p> {/*Date & Time of Event*/}
+          </Jumbotron>
         ))}
-        ;
+        
       </div>
     </Styles>
   );
-};
+}
 
 export default Home;
