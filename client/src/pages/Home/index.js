@@ -27,16 +27,15 @@ const Styles = styled.div`
 
  .jumbo h2{
   font-size: 30px;
-}
+  }
+
  .jumbo p{
    font-size: 18px;
- }
+  }
 
  .jumbo ul li{
    list-style-type: none;
- }
-
-`;
+  }`;
 
 const Home = () => {
   
@@ -52,16 +51,15 @@ const Home = () => {
     <Styles>
       <div className="container">
         {Events.map(event => ( //Looping through events to populate data on the jumbotron
-          <Jumbotron className="jumbo" onClick={handleClick}>
+          <Jumbotron className="jumbo" onClick={handleClick} key={event.id}>
             <h2> {event.title} </h2>
-            <p> Performers:
-              <ul>
-                {event.performers.map(performer => ( // looping through performers if there are multiple
-                  <li> {performer.name} </li>
-                ))}
-              </ul>
-            </p>
-                <p> Date & Time: {event.datetime_utc.replace('T','  ')} </p> {/*Date & Time of Event*/}
+            <br/>
+            <h5> Performers: </h5>
+            {event.performers.map(performer => ( // looping through performers if there are multiple
+              <p key={performer.id}> {performer.name} </p>
+            ))}
+            <br/>
+            <p> Date & Time: {event.datetime_utc.replace('T','  ')} </p> {/*Date & Time of Event*/}
           </Jumbotron>
         ))}
         
