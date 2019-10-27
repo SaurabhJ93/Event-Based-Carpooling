@@ -23,8 +23,9 @@ def index():
 def getUsers(userid):
     cursor = mysql.connection.cursor()
     controller = DBController(cursor)
-    response = controller.getUser(userid)    
-    print('db op', response[0])
+    response = controller.getUser(userid)
+
+    print('db op', response)
     return (str(response))
 
 
