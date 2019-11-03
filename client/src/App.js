@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import {Route, Switch} from 'react-router-dom';
 import './App.css';
 import Home from './pages/Home';
@@ -15,7 +14,7 @@ function App() {
       <NavBar/>
       <Switch className=".container">
           <Route exact path = '/' component={Home}/>
-          <Route path = '/Event' component={Event}/>
+          <Route path = '/Event/:eventid' component={Event}/>
           <Route exact path = '/User' component={User}/>                
       </Switch>
       <Footer/>      
