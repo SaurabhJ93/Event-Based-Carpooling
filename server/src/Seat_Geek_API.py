@@ -1,6 +1,7 @@
 import requests, json
 from requests.exceptions import HTTPError
 from API_Interfaces import API_get_Interface 
+from Preprocess_data import preprocess
 
 class Seat_Geek_Api(API_get_Interface): #Seatgeek api class from api interface class
     def __init__(self):
@@ -13,16 +14,17 @@ class Seat_Geek_Api(API_get_Interface): #Seatgeek api class from api interface c
     def getallEvents(self): # to get all events
         self.api_end_point = 'events' #this valriable should change depending on method called
         response = requests.get(self.api_url_base+self.api_end_point, headers=self.header, params=self.params) #get request to api
-        print(self.api_url_base+self.api_end_point)
         if response.raise_for_status() == None: # No exception will be raised when the request is successful
             return response.json() #returning response in json format
         else:
             return None
+
     def getEvent(self, eventId): # to get an event with an eventid
         self.api_end_point = 'events' #this valriable should change depending on method called
         response = requests.get(self.api_url_base+self.api_end_point+"/"+eventId, headers=self.header, params=self.params) #get request to api
         if response.raise_for_status() == None: # No exception will be raised when the request is successful
-            return response.json() #returning response in json format
+            dataprep = preprocess() #returning res in json format with required processing
+            return dataprep.Event_page_data(response.json())
         else:
             return None
     
@@ -33,6 +35,7 @@ class Seat_Geek_Api(API_get_Interface): #Seatgeek api class from api interface c
             return response.json() #returning response in json format
         else:
             return None
+
     def getVenue(self, venueId): #to get events from a given venue
         self.api_end_point = 'venues' #this valriable should change depending on method called
         response = requests.get(self.api_url_base+self.api_end_point+"/"+venueId, headers=self.header, params=self.params) #get request to api
@@ -48,6 +51,7 @@ class Seat_Geek_Api(API_get_Interface): #Seatgeek api class from api interface c
             return response.json() #returning response in json format
         else:
             return None
+
     def getPerformer(self, performerId): # gets events of given performer
         self.api_end_point = 'performers' #this valriable should change depending on method called
         response = requests.get(self.api_url_base+self.api_end_point+"/"+performerId, headers=self.header, params=self.params) #get request to api

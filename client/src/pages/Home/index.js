@@ -33,36 +33,40 @@ const Styles = styled.div`
    font-size: 18px;
   }
 
- .jumbo ul li{
+ .jumbo li{
    list-style-type: none;
   }`;
 
 const Home = () => {
   
   let history = useHistory();
-  const url = "http://localhost:5000/index"; //URL of flask/backend server
+  const url = "/index"; //URL of flask/backend server
   const [Events, hasErrors] = useFetch(url); // to call flask/backend server
 
-  function handleClick() {
-    history.push("/event");
+  function handleClick (EventId) {
+    history.push({ pathname:"/event/"+EventId});
   }
 
   return (
     <Styles>
       <div className="container">
-        {Events.map(event => ( //Looping through events to populate data on the jumbotron
-          <Jumbotron className="jumbo" onClick={handleClick} key={event.id}>
+        {Events.map(event => ( //Looping through events to populate data on the jumbotron <Link to={`/topics/${id}`}>{name}</Link>
+          <Jumbotron className="jumbo" onClick={() => handleClick(event.id)} key={event.id}>
             <h2> {event.title} </h2>
             <br/>
             <h5> Performers: </h5>
-            {event.performers.map(performer => ( // looping through performers if there are multiple
-              <p key={performer.id}> {performer.name} </p>
+            {event.performers.length > 3 ?
+              event.performers.slice(0,3).map((performer,index) => ( // looping through performers if there are multiple
+                <p key={index}>{ performer.name }</p>
+              )) 
+             :
+             event.performers.map((performer,index) => ( // looping through performers if there are multiple
+              <p key={index}>{ performer.name }</p>
             ))}
             <br/>
             <p> Date & Time: {event.datetime_utc.replace('T','  ')} </p> {/*Date & Time of Event*/}
           </Jumbotron>
         ))}
-        
       </div>
     </Styles>
   );
