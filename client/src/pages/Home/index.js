@@ -50,7 +50,7 @@ const Home = () => {
   return (
     <Styles>
       <div className="container">
-        {Events.map(event => ( //Looping through events to populate data on the jumbotron <Link to={`/topics/${id}`}>{name}</Link>
+        {Events.map(event => ( //Looping through events to populate data on the jumbotron
           <Jumbotron className="jumbo" onClick={() => handleClick(event.id)} key={event.id}>
             <h2> {event.title} </h2>
             <br/>
