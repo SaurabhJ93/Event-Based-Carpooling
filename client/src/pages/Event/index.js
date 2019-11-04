@@ -1,16 +1,7 @@
 import React from "react";
 import eventImg from "../../assests/demoimg.jpg";
 import "../../assests/styles/eventStyle.css";
-
-const events = {
-  name: "Alice Cooper event",
-  location: "Barbara B. Mann Performing Arts Hall,FL",
-  date: "10-25-2019",
-  performer: "Singer",
-  imgUrl: eventImg,
-  desciption:
-    'Cooper is known for his witty personality offstage, with The Rolling Stone Album Guide calling him the world\'s most "beloved heavy metal entertainer"'
-};
+import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
 
 const usersRide = [];
 let i = 0;
@@ -18,44 +9,44 @@ for (i = 1; i <= 2; i++) {
   usersRide.push(`Carpool ${i}`);
 }
 
-const Event = () => {
+const Event = ({ match }) => {
+  const url = "/event/"+match.params.eventid; //URL of flask/backend server
+  const [event, hasErrors] = useFetch(url); // to call flask/backend server
+  
   return (
 
     <div className="container-fluid">
       <div className="row">
-
         <div className="col-sm-6">
-          <p className="eventHeading">{events.name}</p>
-          <img class="card-img-top" src={events.imgUrl} alt="Card image cap" />
-          <br />
-          <p>
-            Name:<span><em>{events.name}</em></span>
-          </p>
-          <p>
-            Date/Time:<span><em>{events.date}</em></span>
-          </p>
-          <p>
-            Location:<span> <em>{events.location}</em></span>
-          </p>
-          <p>
-            Performer:<span><em>{events.performer}</em> </span>
-          </p>
-          <p>
-            Desciption:<span><em>{events.desciption}</em></span>
-          </p>
-          <br />
-          <button type="button" class="btn btn-dark btn-lg ml-4">
-            Offer a Ride
-              </button>
+        <p className="eventHeading">{event.title}</p>
+            <img className="card-img-top" src={event.image} alt="Card cap pic" />
+            <br />
+            <p>
+              Name: <span><em>{event.title}</em></span>
+            </p>
+            <p>
+              Date/Time: <span><em>{event.datetime_local}</em></span>
+            </p>
+            <p>
+              Location: <span> <em>{event.full_address}</em></span>
+            </p>
+            <p> Performer: <span><em>{event.performers_names}</em> </span> </p>
+            <p>
+              Desciption: <span><em>{event.description}</em></span>
+            </p>
+            <br />
+            <button type="button" className="btn btn-dark btn-lg ml-4">
+              Offer a Ride
+            </button>
         </div>
 
         <div className="col-sm-6">
-          <h2 class="h2-request text-center">Request a Ride</h2>
-          <ul class="list-group">
+          <h2 className="h2-request text-center">Request a Ride</h2>
+          <ul className="list-group">
             {usersRide.map(user => (
-              <li class="list-group-item py-4 bg-info">
-                <p class="float-left p-rider">{user}</p>
-                <button type="button" class="btn btn-dark btn-lg float-right">
+              <li className="list-group-item py-4 bg-info" key={user}>
+                <p className="float-left p-rider">{user}</p>
+                <button type="button" className="btn btn-dark btn-lg float-right">
                   Request Ride
                   </button>
               </li>
