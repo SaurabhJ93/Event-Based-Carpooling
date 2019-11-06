@@ -38,13 +38,13 @@ const Styles = styled.div`
   }`;
 
 const Home = () => {
-  
+
   let history = useHistory();
   const url = "/index"; //URL of flask/backend server
   const [Events, hasErrors] = useFetch(url); // to call flask/backend server
-
-  function handleClick (EventId) {
-    history.push({ pathname:"/event/"+EventId});
+  console.log(Events);
+  function handleClick(EventId) {
+    history.push({ pathname: "/event/" + EventId });
   }
 
   return (
@@ -53,18 +53,18 @@ const Home = () => {
         {Events.map(event => ( //Looping through events to populate data on the jumbotron
           <Jumbotron className="jumbo" onClick={() => handleClick(event.id)} key={event.id}>
             <h2> {event.title} </h2>
-            <br/>
+            <br />
             <h5> Performers: </h5>
             {event.performers.length > 3 ?
-              event.performers.slice(0,3).map((performer,index) => ( // looping through performers if there are multiple
-                <p key={index}>{ performer.name }</p>
-              )) 
-             :
-             event.performers.map((performer,index) => ( // looping through performers if there are multiple
-              <p key={index}>{ performer.name }</p>
-            ))}
-            <br/>
-            <p> Date & Time: {event.datetime_utc.replace('T','  ')} </p> {/*Date & Time of Event*/}
+              event.performers.slice(0, 3).map((performer, index) => ( // looping through performers if there are multiple
+                <p key={index}>{performer.name}</p>
+              ))
+              :
+              event.performers.map((performer, index) => ( // looping through performers if there are multiple
+                <p key={index}>{performer.name}</p>
+              ))}
+            <br />
+            <p> Date & Time: {event.datetime_utc.replace('T', '  ')} </p> {/*Date & Time of Event*/}
           </Jumbotron>
         ))}
       </div>
