@@ -1,5 +1,5 @@
 import React from "react";
-import eventImg from "../../assests/demoimg.jpg";
+//import eventImg from "../../assests/demoimg.jpg";
 import "../../assests/styles/eventStyle.css";
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
 
@@ -10,8 +10,10 @@ for (i = 1; i <= 2; i++) {
 }
 
 const Event = ({ match }) => {
-  const url = "/event/"+match.params.eventid; //URL of flask/backend server
-  const [event, hasErrors] = useFetch(url); // to call flask/backend server
+  const url = match.params.eventid; //URL of flask/backend server
+  const [event, rides, hasErrors, hasErrors1] = useFetch(url); // to call flask/backend server
+  console.log(rides);
+  
   
   return (
 
@@ -43,9 +45,11 @@ const Event = ({ match }) => {
         <div className="col-sm-6">
           <h2 className="h2-request text-center">Request a Ride</h2>
           <ul className="list-group">
-            {usersRide.map(user => (
-              <li className="list-group-item py-4 bg-info" key={user}>
-                <p className="float-left p-rider">{user}</p>
+            {rides.map(user => (
+              <li className="list-group-item py-4 bg-info" key={user.RIDE_ID}>
+                <p className="float-left p-rider"> Rider Name: {user.FIRST_NAME+' '+user.LAST_NAME}</p>
+                <p className="float-left p-rider">Start Time: {user.START_TIME}</p>
+                <p className="float-left p-rider">Status: {user.STATUS}</p>
                 <button type="button" className="btn btn-dark btn-lg float-right">
                   Request Ride
                   </button>

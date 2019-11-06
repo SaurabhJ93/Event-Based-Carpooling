@@ -36,6 +36,17 @@ def event(eventId):
     eventdata = event.getEvent(eventId)
     return eventdata
 
+@app.route('/event/rides/<eventId>', methods=['GET']) #handles route of Event page in backend send required data to react
+def rides(eventId):
+    eventId = 5075823 #hardcoded as we have data for this few events only
+    cursor = mysql.connection.cursor()
+    controller = DBController(cursor)
+    if 'userId' in request.args and request.args.get('userId') != "": # condition to check if userId is sent in request 
+        response = controller.getrides_username(eventId, request.args.get('userId')) #sending offered rides data without his own rides
+    else:
+        response = controller.getrides_wo_username(eventId) # sending all offered rides data for any given event
+    return response
+
 
 if __name__ == '__main__':
     app.run(host="localhost", debug=True, port=5000)
