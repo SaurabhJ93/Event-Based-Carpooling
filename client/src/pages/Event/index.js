@@ -1,45 +1,27 @@
 import React from "react";
-import eventImg from "../../assests/demoimg.jpg";
+//import eventImg from "../../assests/demoimg.jpg";
 import "../../assests/styles/eventStyle.css";
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
-import axios from 'axios';
-
-// const usersRide = [];
-// let i = 0;
-// for (i = 1; i <= 2; i++) {
-//   usersRide.push(`Carpool ${i}`);
-// }
+import axios from "axios";
+import Moment from "moment";
 
 const Event = ({ match }) => {
 
-  const url = "/event/" + match.params.eventid; //URL to fetch event details data from flask/backend server
-  //const urlOfferedRides = "/event/rides" + match.params.eventid; //URL to fetch offered rides for the event from flask/backend server
+  const eventId = match.params.eventid; //URL to fetch event details data from flask/backend server
 
+  const [event, Rides, hasErrors] = useFetch(eventId); // to call flask/backend server
+  console.log(Rides);
+  const userId = 'ageldartp'; //Hardcoded logged In user ID
 
-  const [event, hasErrors] = useFetch(url); // to call flask/backend server
-  //const [OfferedRides, hasErrors1] = useFetch(urlOfferedRides); //
+  const handleSaveRequest = (eventId) => {
 
-
-  const OfferedRides = [{
-    "id": 5033135,
-    "username": "Geldart Ardelle",
-    "Car_model": "Ferrari",
-    "no_of_seats": 4
-  }, {
-    "id": 5033136,
-    "username": "Mertel Alberik",
-    "Car_model": "BMW",
-    "no_of_seats": 7
-  }];
-  const status = "pending";
-  const handleSaveRequest = (rideID) => {
     axios({
       method: 'post',
       url: 'http://localhost:5000/saveRequest',
       data: {
-        eventID: match.params.eventid,
-        RideID: '1234',
-        UserID: 'asriva'
+        eventId: eventId,
+        // rideId: rideId,
+        // userId: userId
       }
     });
   };
@@ -74,15 +56,19 @@ const Event = ({ match }) => {
         <div className="col-sm-6">
           <h2 className="h2-request text-center">Request a Ride</h2>
           <ul className="list-group">
-            {OfferedRides.map(ride => (
-              <li className="list-group-item py-4 bg-info" key={ride.id}>
-                <p className="p-rider">{ride.username}</p>
-                <p className="p-rider">Car Model: {ride.Car_model}</p>
-                <p className="p-rider">Number of seats left: {ride.no_of_seats}</p>
-                {status == "pending" &&
-                  <p className="label-registered">Already Registered!</p>}
-                {status != "pending" &&
-                  <button type="button" onClick={() => handleSaveRequest(ride.id)} className="btn btn-dark btn-lg float-right">
+            {Rides.map(ride => (
+              <li className="list-group-item py-4 bg-info shadow mb-3 rounded" key={ride.RIDE_ID}>
+                <p className="p-rider"> Rider:
+                 <span className="ml-2">{ride.RIDE_HOST_USERNAME}</span>
+                </p>
+                <p className="p-rider">Start Date:
+                <span className="ml-2">{Moment(ride.START_TIME).format('MMM-DD-YYYY')}</span>
+                </p>
+                <p className="p-rider">Start Time:
+                <span className="ml-2">{Moment(ride.START_TIME).format('hh:mm')}</span>
+                </p>
+                {ride.STATUS != "pending" &&
+                  <button type="button" onClick={() => handleSaveRequest(ride.RIDE_ID)} className="btn btn-dark btn-lg float-right">
                     Request Ride
                 </button>}
               </li>
