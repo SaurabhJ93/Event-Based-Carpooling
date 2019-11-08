@@ -68,7 +68,7 @@ def save_request():
     "/event/rides/<eventId>", methods=["GET"]
 )  # handles route of Event page in backend send required data to react
 def rides(eventId):
-    eventId = 5075823  # hardcoded as we have data for this few events only
+    eventId = 4704993  # hardcoded as we have data for this few events only
     cursor = mysql.connection.cursor()
     controller = DBController(cursor)
     if (

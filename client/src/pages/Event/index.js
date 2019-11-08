@@ -1,5 +1,5 @@
 import React from "react";
-//import eventImg from "../../assests/demoimg.jpg";
+import eventImg from "../../assests/demoimg.jpg";
 import { useState, useEffect } from "react";
 import "../../assests/styles/eventStyle.css";
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
@@ -17,7 +17,7 @@ const Event = ({ match }) => {
     e.target.classList.add('d-none');
     e.target.nextElementSibling.classList.add('d-block');
 
-    const userId = 'amertel12'; //Hardcoded logged In user ID
+    const userId = 'aoheffernan3'; //Hardcoded logged In user ID
 
     axios({
       method: 'POST',
@@ -55,9 +55,9 @@ const Event = ({ match }) => {
             Desciption: <span><em>{event.description}</em></span>
           </p>
           <br />
-          <button type="button" className="btn btn-dark btn-lg ml-4">
+          {/* <button type="button" className="btn btn-dark btn-lg ml-4">
             Offer a Ride
-            </button>
+            </button> */}
         </div>
 
         <div className="col-sm-6">

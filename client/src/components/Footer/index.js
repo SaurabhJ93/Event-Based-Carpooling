@@ -12,7 +12,7 @@ const Styles = styled.div`
 const Footer = props => {
   return (
     <Styles>
-      <Navbar bg="dark" expand="lg" variant="dark" fixed="bottom">
+      <Navbar bg="dark" expand="lg" variant="dark">
         <Nav.Link href="/" className="content">
           @EBCSystems
         </Nav.Link>

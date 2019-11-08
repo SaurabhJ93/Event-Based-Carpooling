@@ -10,7 +10,7 @@ function useFetch(eventId) {
   useEffect(() => {
 
     async function fetchData() {
-      let params = new URLSearchParams({ "userId": 'amertel12' }).toString(); //hardcoded user need to change to capture user who is logged in
+      let params = new URLSearchParams({ "userId": 'khoston10' }).toString(); //hardcoded user need to change to capture user who is logged in
       const response = await fetch("/event/" + eventId, { method: 'GET', mode: 'cors' }); //awaiting for fetch to retrieve 
       const response1 = await fetch("/event/rides/" + eventId + "?" + params, { method: 'GET', mode: 'cors' }); //awaiting for fetch to retrieve 
       console.log();
