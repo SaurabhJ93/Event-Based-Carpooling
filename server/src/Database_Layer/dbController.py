@@ -45,6 +45,7 @@ class DBController:
             (RideID, eventID, userID, status),
         )
         print("Data Saved!")
+        return "Saved!"
 
     def getrides_wo_username(
         self, eventId

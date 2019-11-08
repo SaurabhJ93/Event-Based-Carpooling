@@ -27,6 +27,10 @@
   .list-group-item p{
      font-size: 1.2em;
   }
+  .span-reqested {
+    font-size: 1.25em;
+    color: darkred;
+  }
   .h2-request {
     margin-top: 70px;
   }

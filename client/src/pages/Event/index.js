@@ -1,5 +1,6 @@
 import React from "react";
 //import eventImg from "../../assests/demoimg.jpg";
+import { useState, useEffect } from "react";
 import "../../assests/styles/eventStyle.css";
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
 import axios from "axios";
@@ -10,24 +11,30 @@ const Event = ({ match }) => {
   const eventId = match.params.eventid; //URL to fetch event details data from flask/backend server
 
   const [event, Rides, hasErrors] = useFetch(eventId); // to call flask/backend server
-  console.log(Rides);
-  const userId = 'ageldartp'; //Hardcoded logged In user ID
 
-  const handleSaveRequest = (eventId) => {
+  const handleSaveRequest = (e, rideId, eventId) => {
+    //Hide the button clicked and display with a "Already Registered" label
+    e.target.classList.add('d-none');
+    e.target.nextElementSibling.classList.add('d-block');
+
+    const userId = 'amertel12'; //Hardcoded logged In user ID
 
     axios({
-      method: 'post',
+      method: 'POST',
       url: 'http://localhost:5000/saveRequest',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
       data: {
         eventId: eventId,
-        // rideId: rideId,
-        // userId: userId
+        userId: userId,
+        rideId: rideId
       }
     });
   };
 
   return (
-
     <div className="container-fluid">
       <div className="row">
         <div className="col-sm-6">
@@ -56,7 +63,7 @@ const Event = ({ match }) => {
         <div className="col-sm-6">
           <h2 className="h2-request text-center">Request a Ride</h2>
           <ul className="list-group">
-            {Rides.map(ride => (
+            {Rides.map((ride) => (
               <li className="list-group-item py-4 bg-info shadow mb-3 rounded" key={ride.RIDE_ID}>
                 <p className="p-rider"> Rider:
                  <span className="ml-2">{ride.RIDE_HOST_USERNAME}</span>
@@ -67,10 +74,15 @@ const Event = ({ match }) => {
                 <p className="p-rider">Start Time:
                 <span className="ml-2">{Moment(ride.START_TIME).format('hh:mm')}</span>
                 </p>
-                {ride.STATUS != "pending" &&
-                  <button type="button" onClick={() => handleSaveRequest(ride.RIDE_ID)} className="btn btn-dark btn-lg float-right">
-                    Request Ride
-                </button>}
+                {ride.STATUS == 'pending' ?
+                  <span className="ml-2 float-right span-reqested">Already Requested! </span> :
+                  <>
+                    <button type="button" onClick={(e) => handleSaveRequest(e, ride.RIDE_ID, match.params.eventid)} className="btn btn-dark btn-lg float-right">
+                      Request Ride
+                     </button>
+                    <span className="d-none ml-2 float-right span-reqested">Already Requested! </span>
+                  </>
+                }
               </li>
             ))}
           </ul>
