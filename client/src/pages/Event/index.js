@@ -12,35 +12,29 @@ const Event = ({ match }) => {
 
   const [event, Rides, hasErrors] = useFetch(eventId); // to call flask/backend server
 
-  const handleSaveRequest = (e, rideId, eventId) => {
-
-    const userId = 'amertel12'; //Hardcoded logged In user ID
-
-    axios({
-      method: 'POST',
-      url: 'http://localhost:5000/saveRequest',
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json'
-      },
-      data: {
+  const handleSaveRequest = async (index, rideId, eventId) => {
+    const userId = 'aoheffernan3'; //Hardcoded logged In user ID
+    try {
+      let response = await axios.post("http://localhost:5000/saveRequest", {
         eventId: eventId,
         userId: userId,
         rideId: rideId
+      }, { 'Content-Type': 'application/json' });
+
+      if (response.status == 200) {
+        //Change the button to "Requested" label
+        let btnReq = document.getElementsByClassName('li-req')[index].children[3];
+        let spanReq = document.getElementsByClassName('li-req')[index].children[4]
+        btnReq.classList.add('d-none')
+        spanReq.classList.add('d-block')
       }
-    }).then((response) => {
-
-      // Hide the button clicked and display with a "Already Registered" label
-      // if successfully inserted the data
-      console.log(response);
-      e.target.classList.add('d-none');
-      e.target.nextElementSibling.classList.add('d-block');
-    }, (error) => {
-
-      // Show error on failed insert
-      console.log(error);
+    }
+    catch (error) {
+      //Show error label on the top
       document.getElementsByClassName('span-error')[0].classList.add('d-block');
-    });
+      console.error('Failure!');
+      console.log(error);
+    }
   };
 
   return (
@@ -73,8 +67,8 @@ const Event = ({ match }) => {
           <h2 className="h2-request text-center">Request a Ride</h2>
           <span className="d-none ml-2 text-center font-weight-bold span-error">Oops...Seems like some error occured!Try again. </span>
           <ul className="list-group">
-            {Rides.map((ride) => (
-              <li className="list-group-item py-4 bg-info shadow mb-3 rounded" key={ride.RIDE_ID}>
+            {Rides.map((ride, i) => (
+              <li className="li-req list-group-item py-4 bg-info shadow mb-3 rounded" key={ride.RIDE_ID}>
                 <p className="p-rider"> Rider:
                  <span className="ml-2">{ride.RIDE_HOST_USERNAME}</span>
                 </p>
@@ -85,9 +79,9 @@ const Event = ({ match }) => {
                 <span className="ml-2">{Moment(ride.START_TIME).format('hh:mm')}</span>
                 </p>
                 {ride.STATUS == 'pending' ?
-                  <span className="ml-2 float-right span-reqested">Already Requested! </span> :
+                  <span className="ml-2 float-right span-reqested">Requested! </span> :
                   <>
-                    <button type="button" onClick={(e) => handleSaveRequest(e, ride.RIDE_ID, match.params.eventid)} className="btn btn-dark btn-lg float-right">
+                    <button key={i} type="button" onClick={() => handleSaveRequest(i, ride.RIDE_ID, match.params.eventid)} className="btn btn-dark btn-lg float-right">
                       Request Ride
                      </button>
                     <span className="d-none ml-2 float-right span-reqested">Requested! </span>
