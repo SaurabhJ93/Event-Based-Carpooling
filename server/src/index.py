@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, json
+from flask import Flask, jsonify, request, json, Response
 from flask_cors import CORS
 from flask_mysqldb import MySQL
 
@@ -62,6 +62,8 @@ def save_request():
     # controller.saveRequest("124", "1", "ageldartp", "pending")
     controller.saveRequest(RideID, eventID, userID, status)
     mysql.connection.commit()
+    Response = app.response_class()
+    return Response
 
 
 @app.route(

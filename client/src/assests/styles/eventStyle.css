@@ -27,7 +27,7 @@
   .list-group-item p{
      font-size: 1.2em;
   }
-  .span-reqested {
+  .span-reqested, .span-error {
     font-size: 1.25em;
     color: darkred;
   }

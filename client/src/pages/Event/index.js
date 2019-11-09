@@ -1,6 +1,6 @@
 import React from "react";
 import eventImg from "../../assests/demoimg.jpg";
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import "../../assests/styles/eventStyle.css";
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
 import axios from "axios";
@@ -13,11 +13,8 @@ const Event = ({ match }) => {
   const [event, Rides, hasErrors] = useFetch(eventId); // to call flask/backend server
 
   const handleSaveRequest = (e, rideId, eventId) => {
-    //Hide the button clicked and display with a "Already Registered" label
-    e.target.classList.add('d-none');
-    e.target.nextElementSibling.classList.add('d-block');
 
-    const userId = 'aoheffernan3'; //Hardcoded logged In user ID
+    const userId = 'amertel12'; //Hardcoded logged In user ID
 
     axios({
       method: 'POST',
@@ -31,6 +28,18 @@ const Event = ({ match }) => {
         userId: userId,
         rideId: rideId
       }
+    }).then((response) => {
+
+      // Hide the button clicked and display with a "Already Registered" label
+      // if successfully inserted the data
+      console.log(response);
+      e.target.classList.add('d-none');
+      e.target.nextElementSibling.classList.add('d-block');
+    }, (error) => {
+
+      // Show error on failed insert
+      console.log(error);
+      document.getElementsByClassName('span-error')[0].classList.add('d-block');
     });
   };
 
@@ -62,6 +71,7 @@ const Event = ({ match }) => {
 
         <div className="col-sm-6">
           <h2 className="h2-request text-center">Request a Ride</h2>
+          <span className="d-none ml-2 text-center font-weight-bold span-error">Oops...Seems like some error occured!Try again. </span>
           <ul className="list-group">
             {Rides.map((ride) => (
               <li className="list-group-item py-4 bg-info shadow mb-3 rounded" key={ride.RIDE_ID}>
@@ -80,7 +90,7 @@ const Event = ({ match }) => {
                     <button type="button" onClick={(e) => handleSaveRequest(e, ride.RIDE_ID, match.params.eventid)} className="btn btn-dark btn-lg float-right">
                       Request Ride
                      </button>
-                    <span className="d-none ml-2 float-right span-reqested">Already Requested! </span>
+                    <span className="d-none ml-2 float-right span-reqested">Requested! </span>
                   </>
                 }
               </li>
