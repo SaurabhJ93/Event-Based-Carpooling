@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import Modal from 'react-bootstrap/Modal';
-// import ModalDialog from 'react-bootstrap/ModalDialog';
 import Button from "react-bootstrap/Button";
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
@@ -98,7 +97,10 @@ const Signup = (props) =>{
                             Phone Number
                         </Form.Label>
                         <Col sm="9">
-                            <Form.Control type="text" name="phone" required placeholder="Phone number" />
+                            <Form.Control type="tel" name="phone" required placeholder="123-456-7890" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" />
+                            <Form.Control.Feedback type="invalid">
+                                Please enter a valid contact number
+                            </Form.Control.Feedback>                            
                         </Col>
                     </Form.Group>
 
@@ -107,9 +109,9 @@ const Signup = (props) =>{
                             Email
                         </Form.Label>
                         <Col sm="9">
-                            <Form.Control type="text" name="email" required placeholder="email@a.com" />
+                            <Form.Control type="email" name="email" required placeholder="email@a.com" />
                             <Form.Control.Feedback type="invalid">
-                                Please enter a valid emailid
+                                Please enter a valid email-id
                             </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
@@ -119,7 +121,10 @@ const Signup = (props) =>{
                             Password
                         </Form.Label>
                         <Col sm="9">
-                            <Form.Control type="text" name="password" required placeholder="Password" />
+                            <Form.Control type="password" name="password" required placeholder="Password" minlength="8" maxLength="16" />
+                            <Form.Control.Feedback type="invalid">
+                                Enter password of 8-16 characters.
+                            </Form.Control.Feedback>                            
                         </Col>
                     </Form.Group>
                     <Col xs={4}>
