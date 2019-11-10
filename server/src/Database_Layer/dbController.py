@@ -1,7 +1,10 @@
+import random, hashlib
 from Models.Userdata import userData
+
 class DBController():
-    def __init__(self, cursor):
+    def __init__(self, cursor, mysql):
         self.cursor = cursor
+        self.mysql = mysql
 
     def getUser(self, username):
         print('username in getuser', username, type(username))
@@ -27,3 +30,22 @@ class DBController():
         print(resp)
 
         return(resp)
+    
+    def enterUser(self, data):
+        print()
+        print('!!In enterUser!!')
+        userName = data['firstName'][:3] + data['lastName'] + str(random.randint(10, 99))
+        hashed_password = (hashlib.md5(data['password'].encode())).hexdigest()
+        print('password hex is', hashed_password)
+        try:
+            self.cursor.execute('Select * from USER where EMAIL_ID ="%s"'%(data['email']))
+            response = self.cursor.fetchall()
+            print("Select resp", response)
+            if response:
+                return('Email already present. Try a new email-id')
+            else:
+                self.cursor.execute('INSERT INTO USER (USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, CONTACT_NO, EMAIL_ID ) VALUES ("%s", "%s", "%s", "%s", "%s", "%s")' % (userName, hashed_password, data['firstName'], data['lastName'], data['phoneNumber'], data['email']))
+                self.mysql.connection.commit()
+                return "Success"
+        except Exception as e:
+            return ('error:' + str(e))
