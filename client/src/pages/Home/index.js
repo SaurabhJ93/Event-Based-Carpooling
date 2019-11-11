@@ -3,7 +3,6 @@ import React from "react";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import styled from "styled-components";
 import background from "../../assests/background-event.jpg";
-import { useHistory } from "react-router-dom";
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
 
 const Styles = styled.div`
@@ -37,14 +36,16 @@ const Styles = styled.div`
    list-style-type: none;
   }`;
 
+
+
 const Home = () => {
 
-  let history = useHistory();
   const url = "/index"; //URL of flask/backend server
   const [Events, hasErrors] = useFetch(url); // to call flask/backend server
   console.log(Events);
+
   function handleClick(EventId) {
-    history.push({ pathname: "/event/" + EventId });
+    window.location = "/event/" + EventId;
   }
 
   return (
