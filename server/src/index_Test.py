@@ -17,7 +17,7 @@ CORS(
 app.config["MYSQL_HOST"] = DB_config.MYSQL_HOST
 app.config["MYSQL_USER"] = DB_config.MYSQL_USER
 app.config["MYSQL_PASSWORD"] = DB_config.MYSQL_PASSWORD
-app.config["MYSQL_DB"] = DB_config.MYSQL_DB
+app.config["MYSQL_DB"] = DB_config.MYSQL_DB_TEST
 mysql = MySQL(app)
 
 
@@ -35,7 +35,6 @@ def getUsers(userid):
     cursor = mysql.connection.cursor()
     controller = DBController(cursor)
     response = controller.getUser(userid)
-
     print("db op", response)
     return str(response)
 
@@ -85,10 +84,6 @@ def rides(eventId):
         )  # sending all offered rides data for any given event
     return response
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-
 
 if __name__ == "__main__":
-    app.run(host="localhost", debug=True, port=5000)
+    app.run(host="localhost", debug=True, port=5001)

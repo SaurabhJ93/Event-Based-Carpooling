@@ -4,7 +4,7 @@ from flask import Flask
 from index import app
 import json
 
-BASE_URL = "http://127.0.0.1:5000"
+BASE_URL = "http://127.0.0.1:5001"
 eventId = "5097856"  # Hardcoded eventID to test the event page
 
 
