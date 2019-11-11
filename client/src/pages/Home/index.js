@@ -1,9 +1,8 @@
 import React from "react";
-import Container from "react-bootstrap/Container";
+// import Container from "react-bootstrap/Container";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import styled from "styled-components";
 import background from "../../assests/background-event.jpg";
-import { useHistory } from "react-router-dom";
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
 
 const Styles = styled.div`
@@ -37,14 +36,16 @@ const Styles = styled.div`
    list-style-type: none;
   }`;
 
+
+
 const Home = () => {
-  
-  let history = useHistory();
+
   const url = "/index"; //URL of flask/backend server
   const [Events, hasErrors] = useFetch(url); // to call flask/backend server
+  console.log(Events);
 
-  function handleClick (EventId) {
-    history.push({ pathname:"/event/"+EventId});
+  function handleClick(EventId) {
+    window.location = "/event/" + EventId;
   }
 
   return (
@@ -53,18 +54,18 @@ const Home = () => {
         {Events.map(event => ( //Looping through events to populate data on the jumbotron
           <Jumbotron className="jumbo" onClick={() => handleClick(event.id)} key={event.id}>
             <h2> {event.title} </h2>
-            <br/>
+            <br />
             <h5> Performers: </h5>
             {event.performers.length > 3 ?
-              event.performers.slice(0,3).map((performer,index) => ( // looping through performers if there are multiple
-                <p key={index}>{ performer.name }</p>
-              )) 
-             :
-             event.performers.map((performer,index) => ( // looping through performers if there are multiple
-              <p key={index}>{ performer.name }</p>
-            ))}
-            <br/>
-            <p> Date & Time: {event.datetime_utc.replace('T','  ')} </p> {/*Date & Time of Event*/}
+              event.performers.slice(0, 3).map((performer, index) => ( // looping through performers if there are multiple
+                <p key={index}>{performer.name}</p>
+              ))
+              :
+              event.performers.map((performer, index) => ( // looping through performers if there are multiple
+                <p key={index}>{performer.name}</p>
+              ))}
+            <br />
+            <p> Date & Time: {event.datetime_utc.replace('T', '  ')} </p> {/*Date & Time of Event*/}
           </Jumbotron>
         ))}
       </div>

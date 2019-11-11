@@ -13,6 +13,7 @@
   }
   .p-rider {
     font-weight: bold;
+    margin-bottom: 0rem;
   }
   span {
     font-weight: normal;
@@ -25,6 +26,10 @@
   }
   .list-group-item p{
      font-size: 1.2em;
+  }
+  .span-reqested, .span-error {
+    font-size: 1.25em;
+    color: darkred;
   }
   .h2-request {
     margin-top: 70px;
