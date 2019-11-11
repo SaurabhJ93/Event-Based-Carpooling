@@ -11,10 +11,7 @@ class DBController:
     def getUser(self, username):
         print("username in getuser", username, type(username))
         # self.cursor.execute('SELECT u1.FIRST_NAME, r1.RIDE_ID as Offered, r2.STATUS FROM RIDES_OFFERED r1 INNER JOIN USER u1 ON r1.USERNAME = u1.USERNAME INNER JOIN RIDES_REQUESTED r2 ON r1.USERNAME = r2.USERNAME WHERE r1.USERNAME = "%s"'% (username))
-        self.cursor.execute(
-            'SELECT u1.FIRST_NAME, u1.`LAST_NAME`, u1.`CONTACT_NO`, u1.`EMAIL_ID`, r1.RIDE_ID as RIDE_ID_OFFERED, r1.`NO_OF_SEATS`, r1.`CAR_MODEL` FROM RIDES_OFFERED r1 INNER JOIN USER u1 ON r1.USERNAME = u1.USERNAME WHERE r1.USERNAME = "%s"'
-            % (username)
-        )
+        self.cursor.execute('SELECT * FROM USER WHERE USERNAME = "%s"'% (username))
         user_data = self.cursor.fetchall()
         print("user_data", user_data)
         print()
@@ -108,12 +105,14 @@ class DBController:
 
     def enterUser(self, data):
         print()
-        print("!!In enterUser!!")
-        userName = (
-            data["firstName"][:3] + data["lastName"] + str(random.randint(10, 99))
-        )
-        hashed_password = (hashlib.md5(data["password"].encode())).hexdigest()
-        print("password hex is", hashed_password)
+        print('!!In enterUser!!')
+        #Generate username
+        userName = data['firstName'][:3] + data['lastName'] + str(random.randint(10, 99))
+
+        #Generate password Hash
+        hashed_password = (hashlib.md5(data['password'].encode())).hexdigest()
+        print('password hex is', hashed_password)
+
         try:
             self.cursor.execute(
                 'Select * from USER where EMAIL_ID ="%s"' % (data["email"])
