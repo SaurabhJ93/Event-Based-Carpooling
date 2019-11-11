@@ -25,4 +25,3 @@ class userData():
 
     def getUserData(self):
         return self.data
-        
