@@ -6,4 +6,11 @@ src/*/__pycache__/*
 /bin
 /include
 /lib
+/Scripts
+/tcl
 server/*.pyc
+encodings.xml
+.idea/*
+LICENSE.txt
+.vscode/*
+*.pyc

@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request, json, Response, render_template
 from flask_cors import CORS
 from flask_mysqldb import MySQL
-from flask import abort
 
 import Seat_Geek_API as SGE
 from Database_Layer.dbController import DBController
@@ -13,11 +12,12 @@ app = Flask(__name__)
 CORS(
     app
 )  # Need this to allow requests between client and server for Cross-origin resource sharing
+
+
 app.config["MYSQL_HOST"] = DB_config.MYSQL_HOST
 app.config["MYSQL_USER"] = DB_config.MYSQL_USER
 app.config["MYSQL_PASSWORD"] = DB_config.MYSQL_PASSWORD
-app.config["MYSQL_DB"] = DB_config.MYSQL_DB
-app.config["CORS_HEADERS"] = "Content-Type"
+app.config["MYSQL_DB"] = DB_config.MYSQL_DB_TEST
 mysql = MySQL(app)
 
 
@@ -33,9 +33,8 @@ def index():
 @app.route("/getusers/<userid>", methods=["GET"])
 def getUsers(userid):
     cursor = mysql.connection.cursor()
-    controller = DBController(cursor, mysql)
+    controller = DBController(cursor)
     response = controller.getUser(userid)
-
     print("db op", response)
     return str(response)
 
@@ -49,34 +48,6 @@ def event(eventId):
     return eventdata
 
 
-@app.route("/signup", methods=["POST"])  # handles route of signup page
-def signup():
-    try:
-        if request.method == "POST":
-            print("Signup is hit!!")
-            data = request.get_json(silent=True)
-            print("Received data is", request.get_json())
-            cursor = mysql.connection.cursor()
-            controller = DBController(cursor, mysql)
-            response = controller.enterUser(data)
-
-            if response == "Success":
-                returnData = {"response": response}
-                print("Sending resposne", returnData)
-                return returnData
-            elif response == "Email already present. Try a new email-id":
-                returnData = {"response": response}
-                print("Sending resposne", returnData)
-                return {"response": response}
-            else:
-                print("error is:", response)
-                (abort(500, {"response": response}))
-
-    except Exception as e:
-        print("error:", e)
-        return e
-
-
 @app.route("/saveRequest", methods=["GET", "POST"])
 def save_request():
     data = request.get_json(silent=True)
@@ -86,7 +57,7 @@ def save_request():
     status = "pending"
     # print(RideID, eventID, userID, status)
     cursor = mysql.connection.cursor()
-    controller = DBController(cursor, mysql)
+    controller = DBController(cursor)
     # controller.saveRequest("124", "1", "ageldartp", "pending")
     controller.saveRequest(RideID, eventID, userID, status)
     mysql.connection.commit()
@@ -100,7 +71,7 @@ def save_request():
 def rides(eventId):
     eventId = 4704993  # hardcoded as we have data for this few events only
     cursor = mysql.connection.cursor()
-    controller = DBController(cursor, mysql)
+    controller = DBController(cursor)
     if (
         "userId" in request.args and request.args.get("userId") != ""
     ):  # condition to check if userId is sent in request
@@ -113,10 +84,6 @@ def rides(eventId):
         )  # sending all offered rides data for any given event
     return response
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-
 
 if __name__ == "__main__":
-    app.run(host="localhost", debug=True, port=5000)
+    app.run(host="localhost", debug=True, port=5001)
