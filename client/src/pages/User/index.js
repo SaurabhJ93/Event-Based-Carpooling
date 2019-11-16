@@ -34,11 +34,11 @@ const User = () => {
                     <p class="mb-2">{users.email}</p>
                     <p class="mb-2">{users.address}</p>
                 </div>
-                <div className="col-sm-4 justify-content-center align-self-center">
+                {/* <div className="col-sm-4 justify-content-center align-self-center">
                     <button type="button" class="btn btn-dark btn-lg">
                         Edit Details
                      </button>
-                </div>
+                </div> */}
             </div>
             <div className="row mt-5 w-75 mx-auto">
                 <div class="col-lg-6 lg-offset-6">

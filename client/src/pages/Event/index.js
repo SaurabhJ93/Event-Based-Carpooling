@@ -1,19 +1,28 @@
 import React from "react";
 import eventImg from "../../assests/demoimg.jpg";
-// import { useState, useEffect } from "react";
 import "../../assests/styles/eventStyle.css";
+import OfferRide from "../../components/OfferRideModal"
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
+import { useState } from "react";
 import axios from "axios";
 import Moment from "moment";
 
 const Event = ({ match }) => {
 
-  const eventId = match.params.eventid; //URL to fetch event details data from flask/backend server
+  const userId = 'ageldartp'; //Hardcoded logged In user ID
+  const [showOfferRide, setShowOfferRide] = useState(false);
 
+  const handleSubmit = () => {
+    console.log('Closing modal');
+    setShowOfferRide(false);
+  };
+
+  const handleShow = () => setShowOfferRide(true);
+
+  const eventId = match.params.eventid; //URL to fetch event details data from flask/backend server
   const [event, Rides, hasErrors] = useFetch(eventId); // to call flask/backend server
 
   const handleSaveRequest = async (index, rideId, eventId) => {
-    const userId = 'aoheffernan3'; //Hardcoded logged In user ID
     try {
       let response = await axios.post("http://localhost:5000/saveRequest", {
         eventId: eventId,
@@ -58,9 +67,10 @@ const Event = ({ match }) => {
             Desciption: <span><em>{event.description}</em></span>
           </p>
           <br />
-          {/* <button type="button" className="btn btn-dark btn-lg ml-4">
+          <button type="button" className="btn btn-dark btn-lg ml-4 mb-4" onClick={handleShow}>
             Offer a Ride
-            </button> */}
+            </button>
+          <OfferRide show={showOfferRide} onSubmit={handleSubmit} eventId={eventId} userId={userId} />
         </div>
 
         <div className="col-sm-6">

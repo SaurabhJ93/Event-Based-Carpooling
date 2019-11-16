@@ -7,7 +7,8 @@ import { useFetch } from "./Backendhooks"; //to handle fetch data request from f
 
 const Styles = styled.div`
  .jumbo{
-    // background: url(${background}) no-repeat fixed bottom;
+    //background: url(${background}) no-repeat fixed bottom;
+    padding: 1em 2em;
     background-color: #7eb3c794;
     color:black;
     margin-top: 0px;

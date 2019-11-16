@@ -11,7 +11,7 @@ class DBController:
     def getUser(self, username):
         print("username in getuser", username, type(username))
         # self.cursor.execute('SELECT u1.FIRST_NAME, r1.RIDE_ID as Offered, r2.STATUS FROM RIDES_OFFERED r1 INNER JOIN USER u1 ON r1.USERNAME = u1.USERNAME INNER JOIN RIDES_REQUESTED r2 ON r1.USERNAME = r2.USERNAME WHERE r1.USERNAME = "%s"'% (username))
-        self.cursor.execute('SELECT * FROM USER WHERE USERNAME = "%s"'% (username))
+        self.cursor.execute('SELECT * FROM USER WHERE USERNAME = "%s"' % (username))
         user_data = self.cursor.fetchall()
         print("user_data", user_data)
         print()
@@ -44,7 +44,6 @@ class DBController:
             (RideID, eventID, userID, status),
         )
         print("Data Saved!")
-        # return response
 
     def getrides_wo_username(
         self, eventId
@@ -105,13 +104,15 @@ class DBController:
 
     def enterUser(self, data):
         print()
-        print('!!In enterUser!!')
-        #Generate username
-        userName = data['firstName'][:3] + data['lastName'] + str(random.randint(10, 99))
+        print("!!In enterUser!!")
+        # Generate username
+        userName = (
+            data["firstName"][:3] + data["lastName"] + str(random.randint(10, 99))
+        )
 
-        #Generate password Hash
-        hashed_password = (hashlib.md5(data['password'].encode())).hexdigest()
-        print('password hex is', hashed_password)
+        # Generate password Hash
+        hashed_password = (hashlib.md5(data["password"].encode())).hexdigest()
+        print("password hex is", hashed_password)
 
         try:
             self.cursor.execute(
@@ -137,3 +138,19 @@ class DBController:
                 return "Success"
         except Exception as e:
             return "error:" + str(e)
+
+    def saveOfferRide(self, data):
+        # self.cursor.execute("Select max(RIDE_ID) from RIDES_OFFERED")
+        # response = self.cursor.fetchone()
+        # if not response:
+        #     rideId = 101
+        # else:
+        #     rideId = int(response[0]) + 1
+        # print("ride id is:", rideId)
+        self.cursor.execute(
+            """INSERT INTO RIDES_OFFERED (EVENT_ID,RIDE_ID,USERNAME,CAR_MODEL,NO_OF_SEATS,START_TIME,WAIT_TIME,START_ADDRESS_LINE1,START_ADDRESS_LINE2,START_CITY,START_STATE,START_ZIP_CODE
+                ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+            (),
+        )
+
+        print("Data Saved!")

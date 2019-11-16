@@ -77,6 +77,29 @@ def signup():
         return e
 
 
+@app.route("/offerRide", methods=["POST"])  # handles route of signup page
+def offerRide():
+    try:
+        if request.method == "POST":
+
+            data = request.get_json(silent=True)
+            print("Received data is", request.get_json())
+            cursor = mysql.connection.cursor()
+            controller = DBController(cursor, mysql)
+            response = controller.saveOfferRide(data)
+            # if response == "Success":
+            #     returnData = {"response": response}
+            #     print("Sending resposne", returnData)
+            #     return returnData
+            # else:
+            #     print("error is:", response)
+            #     (abort(500, {"response": response}))
+
+    except Exception as e:
+        print("error:", e)
+        return e
+
+
 @app.route("/saveRequest", methods=["GET", "POST"])
 def save_request():
     data = request.get_json(silent=True)
