@@ -93,12 +93,13 @@ class DBController:
         )
         ridesdata = self.cursor.fetchall()
         for ride in ridesdata:
+            print(ride)
             d = collections.OrderedDict()
-            d["EVENT_ID"] = ride[0]
-            d["RIDE_ID"] = ride[1]
-            d["RIDE_HOST_USERNAME"] = ride[2]
-            d["START_TIME"] = ride[3].strftime("%d-%m-%Y %H:%M:%S")
-            d["STATUS"] = ride[4] or "NULL"
+            d["EVENT_ID"] = ride["EVENT_ID"]
+            d["RIDE_ID"] = ride["RIDE_ID"]
+            d["RIDE_HOST_USERNAME"] = ride["USERNAME"]
+            d["START_TIME"] = ride["START_TIME"].strftime("%d-%m-%Y %H:%M:%S")
+            d["STATUS"] = ride["STATUS"] or "NULL"
             data.append(d)
         final_dat = json.dumps(data)
         return final_dat

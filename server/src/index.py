@@ -9,7 +9,7 @@ from flask_jwt_extended import (create_access_token)
 
 import Seat_Geek_API as SGE
 from Database_Layer.dbController import DBController
-import DB_config
+import DB_config, hashlib
 
 app = Flask(__name__)
 
@@ -26,12 +26,10 @@ app.config['MYSQL_CURSORCLASS'] = DB_config.MYSQL_CURSORCLASS
 app.config['JWT_SECRET_KEY'] = DB_config.JWT_SECRET_KEY
 mysql = MySQL(app)
 bcrypt = Bcrypt(app)
-jwt = JWTManager(app
+jwt = JWTManager(app)
 
 
-@app.route(
-    "/index", methods=["GET"]
-)  # handles route of home page in backend send required data to react
+@app.route("/index", methods=["GET"])  # handles route of home page in backend send required data to react
 def index():
     events = SGE.Seat_Geek_Api()
     eventsdata = events.getallEvents()
@@ -109,6 +107,7 @@ def rides(eventId):
     eventId = 4704993  # hardcoded as we have data for this few events only
     cursor = mysql.connection.cursor()
     controller = DBController(cursor, mysql)
+    print(request.args.get("userId"))
     if (
         "userId" in request.args and request.args.get("userId") != ""
     ):  # condition to check if userId is sent in request
@@ -120,57 +119,24 @@ def rides(eventId):
             eventId
         )  # sending all offered rides data for any given event
     return response
-
-@app.route('/users/register', methods=['POST'])
-def register():
-    cur = mysql.connection.cursor()
-    first_name = request.get_json()['first_name']
-    last_name = request.get_json()['last_name']
-    email = request.get_json()['email']
-    password = bcrypt.generate_password_hash(request.get_json()['password']).decode('utf-8')
-    created = datetime.utcnow()
-	
-    cur.execute("INSERT INTO users (first_name, last_name, email, password, created) VALUES ('" + 
-		str(first_name) + "', '" + 
-		str(last_name) + "', '" + 
-		str(email) + "', '" + 
-		str(password) + "', '" + 
-		str(created) + "')")
-    mysql.connection.commit()
-	
-    result = {
-		'first_name' : first_name,
-		'last_name' : last_name,
-		'email' : email,
-		'password' : password,
-		'created' : created
-	}
-
-    return jsonify({'result' : result})
 	
 
 @app.route('/users/login', methods=['POST'])
 def login():
     cur = mysql.connection.cursor()
     email = request.get_json()['email']
-    password = request.get_json()['password']
+    password = request.get_json()['password'].encode('utf-8')
     result = ""
 	
-    cur.execute("SELECT * FROM users where email = '" + str(email) + "'")
+    cur.execute("SELECT * FROM USER where email_id = '" + str(email) + "'")
     rv = cur.fetchone()
-	
-    if bcrypt.check_password_hash(rv['password'], password):
-        access_token = create_access_token(identity = {'first_name': rv['first_name'],'last_name': rv['last_name'],'email': rv['email']})
-        result = access_token
+
+    if rv['PASSWORD'] == (hashlib.md5(password)).hexdigest(): #hashing password and validating
+        result = create_access_token(identity = {'first_name': rv['FIRST_NAME'],'last_name': rv['LAST_NAME'],'email': rv['EMAIL_ID']})
     else:
         result = jsonify({"error":"Invalid username and password"})
     
     return result
-	
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
 
 
 if __name__ == "__main__":

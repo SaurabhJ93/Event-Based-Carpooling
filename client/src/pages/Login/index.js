@@ -37,7 +37,8 @@ class Login extends Component {
 
     login(user).then(res => {
       if (!res.error) {
-        this.props.history.push(`/user`)
+        this.props.history.push(`/user`);
+        window.location.reload(false); //need this to display logout button instead of login as user is logged in
       }
     })
   }

@@ -5,7 +5,6 @@ import Home from './pages/Home';
 import Event from './pages/Event';
 import User from './pages/User';
 import Login from './pages/Login';
-import Profile from './pages/Profile';
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 
@@ -18,8 +17,7 @@ function App() {
           <Route exact path = '/' component={Home}/>
           <Route path = '/Event/:eventid' component={Event}/>
           <Route exact path = '/User' component={User}/>
-          <Route exact path = '/Login' component={Login}/>  
-          <Route exact path = '/Profile' component={Profile}/>              
+          <Route exact path = '/Login' component={Login}/>               
       </Switch>
       <Footer/>      
     </div>

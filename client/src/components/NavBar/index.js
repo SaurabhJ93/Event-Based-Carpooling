@@ -6,6 +6,7 @@ import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import icon from "../../assests/icon.png";
 import Signup from "../SignupModal";
+import Redirect from 'react-router-dom'
 
 const imgIcon = {
   width: "45px",
@@ -13,6 +14,7 @@ const imgIcon = {
 };
 
 const NavBar = props => {
+
   const [showSignup, setShowSignup] = useState(false);
 
   const handleSubmit = () => {
@@ -21,6 +23,15 @@ const NavBar = props => {
   };
 
   const handleShow = () => setShowSignup(true);
+
+  const handleLogout = () => {
+    localStorage.clear(); //for localStorage
+    sessionStorage.clear(); //for sessionStorage
+  };
+
+  const handleAccount = () => {
+    window.location.reload(false);
+  }
 
   return (
     <Navbar bg="dark" expand="lg" variant="dark">
@@ -38,11 +49,18 @@ const NavBar = props => {
         <Button variant="outline-light">Search</Button>
       </Form>
       <Nav.Link href="/">Home</Nav.Link>
-      <Nav.Link href="/Login">Login</Nav.Link>
-      <Button variant="outline-light" onClick={handleShow}>
+      { localStorage.usertoken ? 
+        [
+        <Nav.Link href="/" onClick={handleLogout} >Logout</Nav.Link>, 
+        <Nav.Link href="/user" >Account</Nav.Link>
+        ]  :  [
+        <Nav.Link href="/Login" >Login </Nav.Link>, 
+        <Button variant="outline-light" onClick={handleShow}>
         Signup
-      </Button>      
-      <Signup show={showSignup} onSubmit = {handleSubmit}/>
+        </Button>, 
+        <Signup show={showSignup} onSubmit = {handleSubmit}/>
+        ]
+      }
     </Navbar>
   );
 };

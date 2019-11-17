@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export let register = newUser => {
   return axios
