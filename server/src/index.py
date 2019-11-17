@@ -2,6 +2,10 @@ from flask import Flask, jsonify, request, json, Response, render_template
 from flask_cors import CORS
 from flask_mysqldb import MySQL
 from flask import abort
+from datetime import datetime
+from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
+from flask_jwt_extended import (create_access_token)
 
 import Seat_Geek_API as SGE
 from Database_Layer.dbController import DBController
@@ -18,7 +22,11 @@ app.config["MYSQL_USER"] = DB_config.MYSQL_USER
 app.config["MYSQL_PASSWORD"] = DB_config.MYSQL_PASSWORD
 app.config["MYSQL_DB"] = DB_config.MYSQL_DB
 app.config["CORS_HEADERS"] = "Content-Type"
+app.config['MYSQL_CURSORCLASS'] = DB_config.MYSQL_CURSORCLASS
+app.config['JWT_SECRET_KEY'] = DB_config.JWT_SECRET_KEY
 mysql = MySQL(app)
+bcrypt = Bcrypt(app)
+jwt = JWTManager(app
 
 
 @app.route(
@@ -112,6 +120,53 @@ def rides(eventId):
             eventId
         )  # sending all offered rides data for any given event
     return response
+
+@app.route('/users/register', methods=['POST'])
+def register():
+    cur = mysql.connection.cursor()
+    first_name = request.get_json()['first_name']
+    last_name = request.get_json()['last_name']
+    email = request.get_json()['email']
+    password = bcrypt.generate_password_hash(request.get_json()['password']).decode('utf-8')
+    created = datetime.utcnow()
+	
+    cur.execute("INSERT INTO users (first_name, last_name, email, password, created) VALUES ('" + 
+		str(first_name) + "', '" + 
+		str(last_name) + "', '" + 
+		str(email) + "', '" + 
+		str(password) + "', '" + 
+		str(created) + "')")
+    mysql.connection.commit()
+	
+    result = {
+		'first_name' : first_name,
+		'last_name' : last_name,
+		'email' : email,
+		'password' : password,
+		'created' : created
+	}
+
+    return jsonify({'result' : result})
+	
+
+@app.route('/users/login', methods=['POST'])
+def login():
+    cur = mysql.connection.cursor()
+    email = request.get_json()['email']
+    password = request.get_json()['password']
+    result = ""
+	
+    cur.execute("SELECT * FROM users where email = '" + str(email) + "'")
+    rv = cur.fetchone()
+	
+    if bcrypt.check_password_hash(rv['password'], password):
+        access_token = create_access_token(identity = {'first_name': rv['first_name'],'last_name': rv['last_name'],'email': rv['email']})
+        result = access_token
+    else:
+        result = jsonify({"error":"Invalid username and password"})
+    
+    return result
+	
 
 @app.errorhandler(404)
 def page_not_found(e):

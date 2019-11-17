@@ -49,7 +49,8 @@ class FlaskTestCase(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
     
-    def signup(self, email, password, firstName, lastName, phoneNumber):
+    
+    def login(self, email, password, firstName, lastName, phoneNumber):
         testData = {
             "email":email, 
             "password":password, 

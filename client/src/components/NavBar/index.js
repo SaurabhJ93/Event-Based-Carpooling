@@ -38,7 +38,7 @@ const NavBar = props => {
         <Button variant="outline-light">Search</Button>
       </Form>
       <Nav.Link href="/">Home</Nav.Link>
-      <Nav.Link href="/">Login</Nav.Link>
+      <Nav.Link href="/Login">Login</Nav.Link>
       <Button variant="outline-light" onClick={handleShow}>
         Signup
       </Button>      

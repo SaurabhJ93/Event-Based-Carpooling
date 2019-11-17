@@ -3,10 +3,10 @@ import userImg from "../../assests/avataar.svg";
 import "../../assests/styles/userStyle.css";
 
 const users = {
-    name: "Claude Timothy",
-    address: "Barbara B. Mann Performing Arts Hall,FL",
+    name: "Infinitys end",
+    address: "9201 University City Blvd",
     contact: "8457098904",
-    email: "ctimothy0@unc.edu",
+    email: "infinitysend@ymail.com",
 };
 
 const offeredRide = [];
@@ -34,13 +34,13 @@ const User = () => {
                     <p class="mb-2">{users.email}</p>
                     <p class="mb-2">{users.address}</p>
                 </div>
-                <div className="col-sm-4 justify-content-center align-self-center">
+                {/* <div className="col-sm-4 justify-content-center align-self-center">
                     <button type="button" class="btn btn-dark btn-lg">
                         Edit Details
                      </button>
-                </div>
-            </div>
-            <div className="row mt-5 w-75 mx-auto">
+                </div> */}
+            {/* </div> */}
+            {/* <div className="row mt-5 w-75 mx-auto">
                 <div class="col-lg-6 lg-offset-6">
                     <div class="user-offered-rides">
                         <p className="heading-req">Your Offered Rides</p>
@@ -58,8 +58,8 @@ const User = () => {
                             ))}
                         </ul>
                     </div>
-                </div>
-                <div class="col-lg-6 lg-offset-6">
+                </div> */}
+                {/* <div class="col-lg-6 lg-offset-6">
                     <div class="user-requested-rides">
                         <p className="heading-req">Your Requested Rides</p>
                         <ul class="list-group">
@@ -74,7 +74,7 @@ const User = () => {
                             ))}
                         </ul>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );
