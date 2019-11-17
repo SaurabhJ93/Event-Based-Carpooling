@@ -6,7 +6,6 @@ import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import icon from "../../assests/icon.png";
 import Signup from "../SignupModal";
-import Redirect from 'react-router-dom'
 
 const imgIcon = {
   width: "45px",
@@ -28,10 +27,6 @@ const NavBar = props => {
     localStorage.clear(); //for localStorage
     sessionStorage.clear(); //for sessionStorage
   };
-
-  const handleAccount = () => {
-    window.location.reload(false);
-  }
 
   return (
     <Navbar bg="dark" expand="lg" variant="dark">
