@@ -1,4 +1,5 @@
 import React from "react";
+import eventImg from "../../assests/demoimg.jpg";
 import "../../assests/styles/eventStyle.css";
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
 import axios from "axios";
