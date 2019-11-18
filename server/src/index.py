@@ -87,13 +87,13 @@ def offerRide():
             cursor = mysql.connection.cursor()
             controller = DBController(cursor, mysql)
             response = controller.saveOfferRide(data)
-            # if response == "Success":
-            #     returnData = {"response": response}
-            #     print("Sending resposne", returnData)
-            #     return returnData
-            # else:
-            #     print("error is:", response)
-            #     (abort(500, {"response": response}))
+            if response == "Success":
+                returnData = {"response": response}
+                print("Sending resposne", returnData)
+                return returnData
+            else:
+                print("error is:", response)
+                (abort(500, {"response": response}))
 
     except Exception as e:
         print("error:", e)
@@ -136,9 +136,10 @@ def rides(eventId):
         )  # sending all offered rides data for any given event
     return response
 
+
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template("404.html"), 404
 
 
 if __name__ == "__main__":

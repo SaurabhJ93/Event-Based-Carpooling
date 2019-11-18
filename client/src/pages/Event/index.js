@@ -70,7 +70,7 @@ const Event = ({ match }) => {
           <button type="button" className="btn btn-dark btn-lg ml-4 mb-4" onClick={handleShow}>
             Offer a Ride
             </button>
-          <OfferRide show={showOfferRide} onSubmit={handleSubmit} eventId={eventId} userId={userId} />
+          <OfferRide show={showOfferRide} onSubmit={handleSubmit} eventId={eventId} userId={userId} eventDate={event.datetime_local} />
         </div>
 
         <div className="col-sm-6">

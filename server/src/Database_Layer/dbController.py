@@ -140,17 +140,34 @@ class DBController:
             return "error:" + str(e)
 
     def saveOfferRide(self, data):
-        # self.cursor.execute("Select max(RIDE_ID) from RIDES_OFFERED")
-        # response = self.cursor.fetchone()
-        # if not response:
-        #     rideId = 101
-        # else:
-        #     rideId = int(response[0]) + 1
-        # print("ride id is:", rideId)
-        self.cursor.execute(
-            """INSERT INTO RIDES_OFFERED (EVENT_ID,RIDE_ID,USERNAME,CAR_MODEL,NO_OF_SEATS,START_TIME,WAIT_TIME,START_ADDRESS_LINE1,START_ADDRESS_LINE2,START_CITY,START_STATE,START_ZIP_CODE
-                ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-            (),
-        )
-
-        print("Data Saved!")
+        try:
+            eventDate = datetime.datetime.strptime(
+                data["eventDate"], "%Y-%m-%d %H:%M:%S"
+            )
+            temp_start_datetime = (
+                str(eventDate.date()) + " " + data["startTime"] + ":00"
+            )
+            start_datetime = datetime.datetime.strptime(
+                temp_start_datetime, "%Y-%m-%d %H:%M:%S"
+            )
+            self.cursor.execute(
+                """INSERT INTO RIDES_OFFERED (EVENT_ID,USERNAME,CAR_MODEL,NO_OF_SEATS,START_TIME,START_ADDRESS_LINE1,START_ADDRESS_LINE2,START_CITY,START_STATE,START_ZIP_CODE
+                    ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                (
+                    data["eventId"],
+                    data["username"],
+                    data["carModel"],
+                    data["noOfSeats"],
+                    start_datetime,
+                    data["address1"],
+                    data["address2"],
+                    data["city"],
+                    data["state"],
+                    data["zipCode"],
+                ),
+            )
+            self.mysql.connection.commit()
+            print("Data Saved!")
+            return "Success"
+        except Exception as e:
+            return "error:" + str(e)

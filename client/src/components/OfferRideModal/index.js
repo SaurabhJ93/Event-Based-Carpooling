@@ -21,12 +21,13 @@ const OfferRide = (props) => {
             username: props.userId,
             carModel: form.carModel.value,
             noOfSeats: form.noOfSeats.value,
-            startTime: form.email.value,
+            startTime: form.startTime.value,
             address1: form.address1.value,
             address2: form.address2.value,
             city: form.city.value,
             state: form.state.value,
-            zipCode: form.zipCode.value
+            zipCode: form.zipCode.value,
+            eventDate: props.eventDate
         }
         // const data = { eventId: props.eventId }
         console.log(`Data to be passed ${JSON.stringify(data)}`);
@@ -117,7 +118,7 @@ const OfferRide = (props) => {
                             <Col sm="9">
                                 {/* <TimePicker onChange={onTimeChange} name="startTime" start="10:00" end="21:00" step={30} /> */}
 
-                                <DatePicker
+                                <DatePicker className="form-control"
                                     name="startTime"
                                     selected={startDate}
                                     onChange={date => setStartDate(date)}
@@ -125,7 +126,8 @@ const OfferRide = (props) => {
                                     showTimeSelectOnly
                                     timeIntervals={15}
                                     timeCaption="Time"
-                                    dateFormat="h:mm aa"
+                                    dateFormat="HH:mm"
+                                    timeFormat="HH:mm"
                                 />
                             </Col>
                         </Form.Group>

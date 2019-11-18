@@ -43,7 +43,7 @@ const User = () => {
             <div className="row mt-5 w-75 mx-auto">
                 <div class="col-lg-6 lg-offset-6">
                     <div class="user-offered-rides">
-                        <p className="heading-req">Your Offered Rides</p>
+                        <p className="heading-req">Requests Received</p>
                         <ul class="list-group">
                             {offeredRide.map(ride => (
                                 <li class="list-group-item bg-light">
@@ -61,7 +61,7 @@ const User = () => {
                 </div>
                 <div class="col-lg-6 lg-offset-6">
                     <div class="user-requested-rides">
-                        <p className="heading-req">Your Requested Rides</p>
+                        <p className="heading-req">Requests Made</p>
                         <ul class="list-group">
                             {requestedRide.map(ride => (
                                 <li class="list-group-item bg-light">
