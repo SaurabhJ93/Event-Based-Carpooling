@@ -7,6 +7,7 @@ import json
 BASE_URL = "http://127.0.0.1:5000"
 eventId = "5097856"  # Hardcoded eventID to test the event page
 
+
 class FlaskTestCase(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
@@ -48,30 +49,30 @@ class FlaskTestCase(unittest.TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
-    
+
     def signup(self, email, password, firstName, lastName, phoneNumber):
         testData = {
-            "email":email, 
-            "password":password, 
-            "firstName":firstName, 
-            "lastName":lastName, 
-            "phoneNumber":phoneNumber
+            "email": email,
+            "password": password,
+            "firstName": firstName,
+            "lastName": lastName,
+            "phoneNumber": phoneNumber,
         }
-        print('Tetsing signup.....data is', testData)
+        print("Testing signup.....data is", testData)
         return self.app.post(
-            '/signup',
-            data=json.dumps(testData),
-            content_type="application/json"            
+            "/signup", data=json.dumps(testData), content_type="application/json"
         )
 
     # Tests the status and response of signup endpoint
-    def test_enterUser(self):        
-        response = self.signup("testing@test.com", "password`123", "XYZ", "ABC", "1234567890")
+    def test_enterUser(self):
+        response = self.signup(
+            "testing@test.com", "password`123", "XYZ", "ABC", "1234567890"
+        )
         self.assertEqual(response.status_code, 200)
         json_response = response.data
-        print('response received is', response.data)
-        self.assertIn(b'Email already present', json_response)
-        print('Signup test completed!!!')
+        print("response received is", response.data)
+        self.assertIn(b"Email already present", json_response)
+        print("Signup test completed!!!")
         print()
 
 
