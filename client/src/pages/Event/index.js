@@ -1,6 +1,5 @@
 import React from "react";
 import eventImg from "../../assests/demoimg.jpg";
-// import { useState, useEffect } from "react";
 import "../../assests/styles/eventStyle.css";
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
 import axios from "axios";
@@ -21,7 +20,7 @@ const Event = ({ match }) => {
         rideId: rideId
       }, { 'Content-Type': 'application/json' });
 
-      if (response.status == 200) {
+      if (response.status === 200) {
         //Change the button to "Requested" label
         let btnReq = document.getElementsByClassName('li-req')[index].children[3];
         let spanReq = document.getElementsByClassName('li-req')[index].children[4]
@@ -58,9 +57,6 @@ const Event = ({ match }) => {
             Desciption: <span><em>{event.description}</em></span>
           </p>
           <br />
-          {/* <button type="button" className="btn btn-dark btn-lg ml-4">
-            Offer a Ride
-            </button> */}
         </div>
 
         <div className="col-sm-6">
@@ -78,7 +74,7 @@ const Event = ({ match }) => {
                 <p className="p-rider">Start Time:
                 <span className="ml-2">{Moment(ride.START_TIME).format('hh:mm')}</span>
                 </p>
-                {ride.STATUS == 'pending' ?
+                {ride.STATUS === 'pending' ?
                   <span className="ml-2 float-right span-reqested">Requested! </span> :
                   <>
                     <button key={i} type="button" onClick={() => handleSaveRequest(i, ride.RIDE_ID, match.params.eventid)} className="btn btn-dark btn-lg float-right">

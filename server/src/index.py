@@ -2,10 +2,14 @@ from flask import Flask, jsonify, request, json, Response, render_template
 from flask_cors import CORS
 from flask_mysqldb import MySQL
 from flask import abort
+from datetime import datetime
+from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
+from flask_jwt_extended import (create_access_token)
 
 import Seat_Geek_API as SGE
 from Database_Layer.dbController import DBController
-import DB_config
+import DB_config, hashlib
 
 app = Flask(__name__)
 
@@ -17,13 +21,15 @@ app.config["MYSQL_HOST"] = DB_config.MYSQL_HOST
 app.config["MYSQL_USER"] = DB_config.MYSQL_USER
 app.config["MYSQL_PASSWORD"] = DB_config.MYSQL_PASSWORD
 app.config["MYSQL_DB"] = DB_config.MYSQL_DB
-app.config["CORS_HEADERS"] = "Content-Type"
+app.config["CORS_HEADERS"] = DB_config.CORS_HEADERS
+app.config['MYSQL_CURSORCLASS'] = DB_config.MYSQL_CURSORCLASS
+app.config['JWT_SECRET_KEY'] = DB_config.JWT_SECRET_KEY
 mysql = MySQL(app)
+bcrypt = Bcrypt(app)
+jwt = JWTManager(app)
 
 
-@app.route(
-    "/index", methods=["GET"]
-)  # handles route of home page in backend send required data to react
+@app.route("/index", methods=["GET"])  # handles route of home page in backend send required data to react
 def index():
     events = SGE.Seat_Geek_Api()
     eventsdata = events.getallEvents()
@@ -101,6 +107,7 @@ def rides(eventId):
     eventId = 4704993  # hardcoded as we have data for this few events only
     cursor = mysql.connection.cursor()
     controller = DBController(cursor, mysql)
+    print(request.args.get("userId"))
     if (
         "userId" in request.args and request.args.get("userId") != ""
     ):  # condition to check if userId is sent in request
@@ -112,10 +119,24 @@ def rides(eventId):
             eventId
         )  # sending all offered rides data for any given event
     return response
+	
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
+@app.route('/users/login', methods=['POST'])
+def login():
+    cur = mysql.connection.cursor()
+    email = request.get_json()['email']
+    password = request.get_json()['password'].encode('utf-8')
+    result = ""
+	
+    cur.execute("SELECT * FROM USER where email_id = '" + str(email) + "'")
+    rv = cur.fetchone()
+
+    if rv['PASSWORD'] == (hashlib.md5(password)).hexdigest(): #hashing password and validating
+        result = create_access_token(identity = {'first_name': rv['FIRST_NAME'],'last_name': rv['LAST_NAME'],'email': rv['EMAIL_ID']})
+    else:
+        result = jsonify({"error":"Invalid username and password"})
+    
+    return result
 
 
 if __name__ == "__main__":
