@@ -32,8 +32,25 @@ jwt = JWTManager(app)
 @app.route("/index", methods=["GET"])  # handles route of home page in backend send required data to react
 def index():
     events = SGE.Seat_Geek_Api()
-    eventsdata = events.getallEvents()
-    return eventsdata
+    print()
+    if request.args:
+        filterValue = ((request.args.get('filterValue')).split('%20'))[0]
+        searchValue = request.args.get('searchValue')
+        print('filterValue is', filterValue, 'searchValue is', searchValue)
+        if filterValue == 'City':
+            eventsdata = events.getByVenue(searchValue)
+        elif filterValue == 'Date':
+            eventsdata = events.getByDate(searchValue)
+        elif filterValue == 'Performer':
+            eventsdata = events.getByPerformer(searchValue.replace(' ', '-'))
+        elif filterValue == 'No Filter':
+            eventsdata = events.getByQuery(searchValue.replace(' ', '+'))
+        
+    else:
+        print('No filter arguments found')
+        eventsdata = events.getallEvents()
+    # print('\n Sending data', eventsdata)
+    return eventsdata, 200
 
 
 @app.route("/getusers/<userid>", methods=["GET"])

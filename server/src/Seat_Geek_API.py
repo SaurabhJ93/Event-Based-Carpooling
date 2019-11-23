@@ -35,21 +35,24 @@ class Seat_Geek_Api(API_get_Interface): #Seatgeek api class from api interface c
             return {"status": "error", "message": "Data Processing Issue", "code": 808}
         
     
-    def getallVenues(self): # to get all venues events
-        self.api_end_point = 'venues' #this valriable should change depending on method called
+    def getByQuery(self, query): # to get all venues events
+        print('In getByQuery fucntion!!!')    
+        self.api_end_point = 'events?q=' #this valriable should change depending on method called
+        print('url will be', self.api_url_base + self.api_end_point + query)
         try:
-            response = requests.get(self.api_url_base+self.api_end_point, headers=self.header, params=self.params) #get request to api
+            response = requests.get(self.api_url_base + self.api_end_point + query, headers=self.header, params=self.params) #get request to api
             response.raise_for_status() # No exception will be raised when the request is successful
-            return response.json() #returning response in json format
+            return {'events': []} if response.json()['events'] == [] else response.json()
         except requests.exceptions.HTTPError as err:
             return {"status": "error", "message": err}
         except:
             return {"status": "error", "message": "Data Processing Issue", "code": 808}
 
-    def getVenue(self, venueId): #to get events from a given venue
-        self.api_end_point = 'venues' #this valriable should change depending on method called
+    def getByVenue(self, city): #to get events from a given venue
+        print('In getByVenue fucntion!!!')
+        self.api_end_point = 'events?venue.city=' #this valriable should change depending on method called
         try:
-            response = requests.get(self.api_url_base+self.api_end_point+"/"+venueId, headers=self.header, params=self.params) #get request to api
+            response = requests.get(self.api_url_base + self.api_end_point + city, headers=self.header, params=self.params) #get request to api
             response.raise_for_status() # No exception will be raised when the request is successful
             return response.json() #returning response in json format
         except requests.exceptions.HTTPError as err:
@@ -57,10 +60,11 @@ class Seat_Geek_Api(API_get_Interface): #Seatgeek api class from api interface c
         except:
             return {"status": "error", "message": "Data Processing Issue", "code": 808}
     
-    def getallPerformers(self): # gets events of some performers
-        self.api_end_point = 'performers' #this valriable should change depending on method called
+    def getByDate(self, date): # gets events of some performers
+        print('In getByDate fucntion!!!')    
+        self.api_end_point = 'events?datetime_utc.gte=' #this valriable should change depending on method called
         try:
-            response = requests.get(self.api_url_base+self.api_end_point, headers=self.header, params=self.params) #get request to api
+            response = requests.get(self.api_url_base + self.api_end_point + date, headers=self.header, params=self.params) #get request to api
             response.raise_for_status() # No exception will be raised when the request is successful
             return response.json() #returning response in json format
         except requests.exceptions.HTTPError as err:
@@ -68,13 +72,16 @@ class Seat_Geek_Api(API_get_Interface): #Seatgeek api class from api interface c
         except:
             return {"status": "error", "message": "Data Processing Issue", "code": 808}
 
-    def getPerformer(self, performerId): # gets events of given performer
-        self.api_end_point = 'performers' #this valriable should change depending on method called
+    def getByPerformer(self, performer): # gets events of given performer
+        print('In getByPerformer fucntion!!! Performer is', performer)
+        self.api_end_point = 'events?performers.slug=' #this valriable should change depending on method called
         try:
-            response = requests.get(self.api_url_base+self.api_end_point+"/"+performerId, headers=self.header, params=self.params) #get request to api
+            response = requests.get(self.api_url_base + self.api_end_point + performer, headers=self.header, params=self.params) #get request to api
             response.raise_for_status() # No exception will be raised when the request is successful
             return response.json() #returning response in json format
         except requests.exceptions.HTTPError as err:
+            print('error: url is', self.api_url_base + self.api_end_point + performer)
             return {"status": "error", "message": err}
         except:
+            print('error: url is', self.api_url_base + self.api_end_point + performer)            
             return {"status": "error", "message": "Data Processing Issue", "code": 808}

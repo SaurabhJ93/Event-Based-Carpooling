@@ -1,8 +1,10 @@
 # Flask endpoint test cases
 import unittest
+from unittest.mock import Mock, patch, MagicMock
 from flask import Flask
 from index import app
 import json
+from Seat_Geek_API import Seat_Geek_Api
 
 BASE_URL = "http://127.0.0.1:5000"
 eventId = "5097856"  # Hardcoded eventID to test the event page
@@ -49,13 +51,12 @@ class FlaskTestCase(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
     
-    
-    def login(self, email, password, firstName, lastName, phoneNumber):
+    def signup(self, email, password, firstName, lastName, phoneNumber):
         testData = {
-            "email":email, 
-            "password":password, 
-            "firstName":firstName, 
-            "lastName":lastName, 
+            "email":email,
+            "password":password,
+            "firstName":firstName,
+            "lastName":lastName,
             "phoneNumber":phoneNumber
         }
         print('Tetsing signup.....data is', testData)
@@ -66,14 +67,26 @@ class FlaskTestCase(unittest.TestCase):
         )
 
     # Tests the status and response of signup endpoint
-    def test_enterUser(self):        
-        response = self.signup("testing@test.com", "password`123", "XYZ", "ABC", "1234567890")
+    def test_enterUser(self):
+        response = self.signup("testing@test.com", "password123", "XYZ", "ABC", "1234567890")
         self.assertEqual(response.status_code, 200)
         json_response = response.data
         print('response received is', response.data)
         self.assertIn(b'Email already present', json_response)
         print('Signup test completed!!!')
         print()
+
+    @patch('app.events.getallEvents')
+    def test_searchFilters(self, mock_get):
+        # thing = Seat_Geek_Api()
+        # thing.getallEvents(return_value=3)
+        # mock_get.return_value.response = {'events': []}
+        response = self.app.get(BASE_URL + "/index")
+        print('check response is ', response)
+        data = json.loads(response.get_data())
+        # print('response received is', data)
+        self.assertIn("events", str(data))  # Testing if data is correct
+        # self.assertEqual(response.status_code, 200)  # Testing if endpoint is hitting
 
 
 if __name__ == "__main__":
