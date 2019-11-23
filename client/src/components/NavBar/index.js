@@ -89,7 +89,7 @@ const NavBar = props => {
       { localStorage.usertoken ? 
         [
         <Nav.Link href="/" onClick={handleLogout} >Logout</Nav.Link>, 
-        <Nav.Link href="/user">Account</Nav.Link>
+        <Nav.Link href="/user" >Profile</Nav.Link>
         ]  :  [
         <Nav.Link href="/Login" >Login </Nav.Link>, 
         <Button variant="outline-light" onClick={handleShow}>
