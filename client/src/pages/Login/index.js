@@ -40,6 +40,11 @@ class Login extends Component {
         this.props.history.push(`/user`);
         window.location.reload(false); //need this to display logout button instead of login as user is logged in
       }
+      else{
+        
+        
+        alert("Either username or password is wrong");
+      }
     })
   }
 
