@@ -43,14 +43,15 @@ def index():
             eventsdata = events.getByDate(searchValue)
         elif filterValue == 'Performer':
             eventsdata = events.getByPerformer(searchValue.replace(' ', '-'))
-        elif filterValue == 'No Filter':
+        elif filterValue == 'No Filter' and searchValue !="":
             eventsdata = events.getByQuery(searchValue.replace(' ', '+'))
+        else:
+            eventsdata = events.getallEvents()            
         
     else:
         print('No filter arguments found')
         eventsdata = events.getallEvents()
-    # print('\n Sending data', eventsdata)
-    return eventsdata, 200
+    return eventsdata
 
 
 @app.route("/getusers/<userid>", methods=["GET"])

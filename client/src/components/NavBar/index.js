@@ -14,6 +14,11 @@ const imgIcon = {
   marginRight: "10px"
 };
 
+const brand = {
+  backgroundColor: "inherit",
+  borderColor: "darkslategrey"
+};
+
 const NavBar = props => {
 
   const [showSignup, setShowSignup] = useState(false);
@@ -39,15 +44,18 @@ const NavBar = props => {
   const onSearch = (event) => {
     event.preventDefault();
     let form = event.target;
-    console.log(form.elements.searchValue.value);
-    history.push("/", {filterValue: filterValue, searchValue: form.elements.searchValue.value});
+    // console.log(form.elements.searchValue.value);
+    if (form.elements) history.push("/", {filterValue: filterValue, searchValue: form.elements.searchValue.value});
+    else history.push('/');
   };
 
   return (
     <Navbar bg="dark" expand="lg" variant="dark">
-      <Navbar.Brand href="/" className="ml-lg-5 w-25">
-        <img src={icon} style={imgIcon} alt="Site logo" />
-        Event Based Carpool
+      <Navbar.Brand onClick={onSearch} className="ml-lg-5 w-25">
+        <Button style={brand}>
+          <img src={icon} style={imgIcon} alt="Site logo" />
+          Event Based Carpool
+        </Button>
       </Navbar.Brand>
 
       <Form inline className="w-50" onSubmit={onSearch}>
@@ -85,7 +93,7 @@ const NavBar = props => {
         }
         <Button variant="outline-light" type='submit'>Search</Button>
       </Form>
-      <Nav.Link href="/">Home</Nav.Link>
+      <Nav.Link href="/" onClick={onSearch}>Home</Nav.Link>
       { localStorage.usertoken ? 
         [
         <Nav.Link href="/" onClick={handleLogout} >Logout</Nav.Link>, 

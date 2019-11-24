@@ -19,7 +19,7 @@ class Seat_Geek_Api(API_get_Interface): #Seatgeek api class from api interface c
             return response.json() #returning response in json format
         except requests.exceptions.HTTPError as err:
             return {"status": "error", "message": err}
-        except:
+        except Exception as err:
             return {"status": "error", "message": "Data Processing Issue", "code": 808}
 
     def getEvent(self, eventId): # to get an event with an eventid
@@ -80,8 +80,6 @@ class Seat_Geek_Api(API_get_Interface): #Seatgeek api class from api interface c
             response.raise_for_status() # No exception will be raised when the request is successful
             return response.json() #returning response in json format
         except requests.exceptions.HTTPError as err:
-            print('error: url is', self.api_url_base + self.api_end_point + performer)
             return {"status": "error", "message": err}
         except:
-            print('error: url is', self.api_url_base + self.api_end_point + performer)            
             return {"status": "error", "message": "Data Processing Issue", "code": 808}

@@ -43,13 +43,10 @@ const Home = (props) => {
   let queryParams = "";
   if (props.location.state != undefined){
     queryParams = `?filterValue=${props.location.state.filterValue}&searchValue=${props.location.state.searchValue}`;
-    console.log(props.location.state.searchValue);      
   }
   const url = "/index" + queryParams; //URL of flask/backend server
-  console.log(url);  
+  console.log(url);
   const [Events, hasErrors] = useFetch(url); // to call flask/backend server
-  console.log(Events);
-  console.log('Event length is', Events.length);
 
   function handleClick(EventId) {
     window.location = "/event/" + EventId;
