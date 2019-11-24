@@ -36,14 +36,10 @@ class Login extends Component {
     }
 
     login(user).then(res => {
-      if (!res.error) {
-        this.props.history.push(`/user`);
-        window.location.reload(false); //need this to display logout button instead of login as user is logged in
-      }
-      else{
-        
-        
+      if (res.error) {
         alert("Either username or password is wrong");
+      } else{
+        window.location.href = '/user'; //referencing user page link
       }
     })
   }
@@ -85,6 +81,7 @@ class Login extends Component {
                 Sign in
               </button>
             </form>
+				  
           </div>
         </div>
       </div>

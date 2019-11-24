@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import jwt_decode from 'jwt-decode';
 
 function useFetch(eventId) {
 
@@ -10,10 +11,16 @@ function useFetch(eventId) {
   useEffect(() => {
 
     async function fetchData() {
-      let params = new URLSearchParams({ "userId": 'khoston10' }).toString(); //hardcoded user need to change to capture user who is logged in
-      const response = await fetch("/event/" + eventId, { method: 'GET', mode: 'cors' }); //awaiting for fetch to retrieve 
-      const response1 = await fetch("/event/rides/" + eventId + "?" + params, { method: 'GET', mode: 'cors' }); //awaiting for fetch to retrieve 
-      console.log();
+      
+      let response = await fetch("/event/" + eventId, { method: 'GET', mode: 'cors' }); //awaiting for fetch to retrieve 
+      let response1 = undefined;
+      if(localStorage.usertoken){
+        let decoded = jwt_decode(localStorage.usertoken);
+        let params = new URLSearchParams({ "userId": decoded.identity.username }).toString(); //hardcoded user need to change to capture user who is logged in
+        response1 = await fetch("/event/rides/" + eventId + "?" + params, { method: 'GET', mode: 'cors' }); //awaiting for fetch to retrieve 
+      } else{
+        response1 = await fetch("/event/rides/" + eventId, { method: 'GET', mode: 'cors' }); //awaiting for fetch to retrieve 
+      }
 
       response.json() // converting response to json format
         .then(response => setEvent(response)) //sending data to Event variable
@@ -24,6 +31,9 @@ function useFetch(eventId) {
         .catch(err1 => setErrors1(err1)) // to send errors if there are any
 
     }
+
+    console.log(Rides);
+    
 
     fetchData();
 

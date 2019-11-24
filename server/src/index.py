@@ -61,7 +61,7 @@ def getUsers(userid):
     response = controller.getUser(userid)
 
     print("db op", response)
-    return str(response)
+    return response
 
 
 @app.route(
@@ -101,6 +101,29 @@ def signup():
         return e
 
 
+@app.route("/offerRide", methods=["POST"])  # handles route of signup page
+def offerRide():
+    try:
+        if request.method == "POST":
+
+            data = request.get_json(silent=True)
+            print("Received data is", request.get_json())
+            cursor = mysql.connection.cursor()
+            controller = DBController(cursor, mysql)
+            response = controller.saveOfferRide(data)
+            if response == "Success":
+                returnData = {"response": response}
+                print("Sending resposne", returnData)
+                return returnData
+            else:
+                print("error is:", response)
+                (abort(500, {"response": response}))
+
+    except Exception as e:
+        print("error:", e)
+        return e
+
+
 @app.route("/saveRequest", methods=["GET", "POST"])
 def save_request():
     data = request.get_json(silent=True)
@@ -117,17 +140,33 @@ def save_request():
     Response = app.response_class()
     return Response
 
+@app.route("/users/modifyRequest", methods=["POST"])
+def modifyRequest():
+    data = request.get_json(silent=True)
+    cursor = mysql.connection.cursor()
+    controller = DBController(cursor, mysql)
+    if data["status"] in ["accepted", "declined"]:
+        result = controller.updateRequest(data["requestId"], data["status"])
+        if result == data["status"]:
+            return result
+        else:
+            response = json.loads(json.dumps({"status":"error", "message":"Error while modifying request"}))
+            (abort(500, {"response": response}))
+    else:
+        response = json.loads(json.dumps({"status":"error", "message":"Invalid status. Please check"}))
+        (abort(500, {"response": response}))
+
 
 @app.route(
     "/event/rides/<eventId>", methods=["GET"]
 )  # handles route of Event page in backend send required data to react
 def rides(eventId):
-    eventId = 4704993  # hardcoded as we have data for this few events only
+    # eventId = 4704993  # hardcoded as we have data for this few events only
     cursor = mysql.connection.cursor()
     controller = DBController(cursor, mysql)
     print(request.args.get("userId"))
     if (
-        "userId" in request.args and request.args.get("userId") != ""
+        "userId" in request.args and (request.args.get("userId") not in ["","None", "undefined"])
     ):  # condition to check if userId is sent in request
         response = controller.getrides_username(
             eventId, request.args.get("userId")
@@ -150,7 +189,7 @@ def login():
     rv = cur.fetchone()
 
     if rv['PASSWORD'] == (hashlib.md5(password)).hexdigest(): #hashing password and validating
-        result = create_access_token(identity = {'first_name': rv['FIRST_NAME'],'last_name': rv['LAST_NAME'],'email': rv['EMAIL_ID']})
+        result = create_access_token(identity = {'first_name': rv['FIRST_NAME'],'last_name': rv['LAST_NAME'],'username': rv['USERNAME'],'email': rv['EMAIL_ID']})
     else:
         result = jsonify({"error":"Invalid username and password"})
     
