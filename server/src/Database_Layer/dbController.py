@@ -148,6 +148,7 @@ class DBController:
             event = SGE.Seat_Geek_Api()
             eventdata = event.getEvent(data["eventId"])
 
+            # append user selected time to the event date and convert it to datetime
             eventDate = datetime.datetime.strptime(
                 data["eventDate"], "%Y-%m-%d %H:%M:%S"
             )
@@ -161,16 +162,16 @@ class DBController:
             # Save data to event table
             self.cursor.execute(
                 """INSERT INTO EVENTS (EVENT_ID,EVENT_NAME,FULL_ADDRESS,DESCRIPTION,PERFORMERS_NAMES,PERFORMERS_ID,VENUE_ID,DATE_TIME_LOCAL
-                    ) VALUES(%s,%s,%s,%s,%s,%s,%s)""",
+                    ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)""",
                 (
-                    eventdata["EVENT_ID"],
-                    eventdata["EVENT_NAME"],
-                    eventdata["FULL_ADDRESS"],
-                    eventdata["DESCRIPTION"],
-                    eventdata["PERFORMERS_NAMES"],
-                    eventdata["PERFORMERS_ID"],
-                    eventdata["VENUE_ID"],
-                    eventdata["DATE_TIME_LOCAL"],
+                    eventdata["id"],
+                    eventdata["title"],
+                    eventdata["full_address"],
+                    eventdata["description"],
+                    eventdata["performers_names"],
+                    eventdata["performers_ids"],
+                    eventdata["venue_id"],
+                    eventdata["datetime_local"],
                 ),
             )
             # Save data into the offered rides table

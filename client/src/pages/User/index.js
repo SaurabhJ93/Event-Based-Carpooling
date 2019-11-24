@@ -53,11 +53,10 @@ const User = () => {
                 <li class="list-group-item bg-light">
                   <span class="float-left p-rider">{ride}</span>
                   <button type="button" class="btn btn-dark btn-sm float-right font-weight-bold">
-                    Decline
-                                        </button>&nbsp;
-                                        <button type="button" class="btn btn-dark btn-sm float-right mr-2 font-weight-bold">
+                    Decline </button>&nbsp;
+                    <button type="button" class="btn btn-dark btn-sm float-right mr-2 font-weight-bold">
                     Accept
-                                        </button>
+                     </button>
                 </li>
               ))}
             </ul>
