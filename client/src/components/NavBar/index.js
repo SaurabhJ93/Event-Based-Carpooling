@@ -13,6 +13,7 @@ const imgIcon = {
 };
 
 const NavBar = props => {
+
   const [showSignup, setShowSignup] = useState(false);
 
   const handleSubmit = () => {
@@ -21,6 +22,11 @@ const NavBar = props => {
   };
 
   const handleShow = () => setShowSignup(true);
+
+  const handleLogout = () => {
+    localStorage.clear(); //for localStorage
+    sessionStorage.clear(); //for sessionStorage
+  };
 
   return (
     <Navbar bg="dark" expand="lg" variant="dark">
@@ -38,11 +44,18 @@ const NavBar = props => {
         <Button variant="outline-light">Search</Button>
       </Form>
       <Nav.Link href="/">Home</Nav.Link>
-      <Nav.Link href="/">Login</Nav.Link>
-      <Button variant="outline-light" onClick={handleShow}>
+      { localStorage.usertoken ? 
+        [
+        <Nav.Link href="/" onClick={handleLogout} >Logout</Nav.Link>, 
+        <Nav.Link href="/user" >Profile</Nav.Link>
+        ]  :  [
+        <Nav.Link href="/Login" >Login </Nav.Link>, 
+        <Button variant="outline-light" onClick={handleShow}>
         Signup
-      </Button>      
-      <Signup show={showSignup} onSubmit = {handleSubmit}/>
+        </Button>, 
+        <Signup show={showSignup} onSubmit = {handleSubmit}/>
+        ]
+      }
     </Navbar>
   );
 };
