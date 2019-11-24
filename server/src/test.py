@@ -46,12 +46,8 @@ class FlaskTestCase(unittest.TestCase):
         }
 
     # Tests the home page endpoint
-    def test_home(self):
-        # response = self.app.get(BASE_URL + "/index")
-        # data = json.loads(response.get_data())
-        # self.assertIn("performers", str(data))  # Testing if data is correct
-        # self.assertEqual(response.status_code, 200)  # Testing if endpoint is hitting
-
+    @patch('Seat_Geek_API.requests.get')    
+    def test_home(self, mock_get):
         raise_for_status = Mock()        
         mock_get.return_value.raise_for_status= raise_for_status
         mock_get.return_value = self.sampleResponse
@@ -109,14 +105,23 @@ class FlaskTestCase(unittest.TestCase):
         )
 
     # Tests the status and response of signup endpoint
-    def test_enterUser(self):
+    def test_enterUserSuccess(self):
         response = self.signup("testing@test.com", "password123", "XYZ", "ABC", "1234567890", "Success")
         self.assertEqual(response.status_code, 200)
         json_response = response.data
         print('response received is', response.data)
         self.assertIn(b'Success', json_response)
-        print('Signup test completed!!!')
+        print('Signup Success test completed!!!')
         print()
+
+    def test_enterUserFailure(self):
+        response = self.signup("testing@test.com", "password123", "XYZ", "ABC", "1234567890", "Email already present. Try a new email-id")
+        self.assertEqual(response.status_code, 200)
+        json_response = response.data
+        print('response received is', response.data)
+        self.assertIn(b'Email already present', json_response)
+        print('Signup Failure test completed!!!')
+        print()        
 
     @patch('Seat_Geek_API.requests.get')
     def test_cityFilter(self, mock_get):
