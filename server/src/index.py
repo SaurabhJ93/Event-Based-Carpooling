@@ -43,7 +43,7 @@ def getUsers(userid):
     response = controller.getUser(userid)
 
     print("db op", response)
-    return str(response)
+    return response
 
 
 @app.route(
@@ -122,6 +122,22 @@ def save_request():
     Response = app.response_class()
     return Response
 
+@app.route("/users/modifyRequest", methods=["POST"])
+def modifyRequest():
+    data = request.get_json(silent=True)
+    cursor = mysql.connection.cursor()
+    controller = DBController(cursor, mysql)
+    if data["status"] in ["accepted", "declined"]:
+        result = controller.updateRequest(data["requestId"], data["status"])
+        if result == data["status"]:
+            return result
+        else:
+            response = json.loads(json.dumps({"status":"error", "message":"Error while modifying request"}))
+            (abort(500, {"response": response}))
+    else:
+        response = json.loads(json.dumps({"status":"error", "message":"Invalid status. Please check"}))
+        (abort(500, {"response": response}))
+
 
 @app.route(
     "/event/rides/<eventId>", methods=["GET"]
@@ -132,7 +148,7 @@ def rides(eventId):
     controller = DBController(cursor, mysql)
     print(request.args.get("userId"))
     if (
-        "userId" in request.args and request.args.get("userId") != ""
+        "userId" in request.args and (request.args.get("userId") not in ["","None", "undefined"])
     ):  # condition to check if userId is sent in request
         response = controller.getrides_username(
             eventId, request.args.get("userId")
