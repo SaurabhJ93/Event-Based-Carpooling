@@ -1,6 +1,7 @@
 import random, hashlib
 from Models.Userdata import userData
 import json, collections, datetime
+import Seat_Geek_API as SGE
 
 
 class DBController:
@@ -11,7 +12,7 @@ class DBController:
     def getUser(self, username):
         print("username in getuser", username, type(username))
         # self.cursor.execute('SELECT u1.FIRST_NAME, r1.RIDE_ID as Offered, r2.STATUS FROM RIDES_OFFERED r1 INNER JOIN USER u1 ON r1.USERNAME = u1.USERNAME INNER JOIN RIDES_REQUESTED r2 ON r1.USERNAME = r2.USERNAME WHERE r1.USERNAME = "%s"'% (username))
-        self.cursor.execute('SELECT * FROM USER WHERE USERNAME = "%s"'% (username))
+        self.cursor.execute('SELECT * FROM USER WHERE USERNAME = "%s"' % (username))
         user_data = self.cursor.fetchall()
         print("user_data", user_data)
         print()
@@ -44,7 +45,6 @@ class DBController:
             (RideID, eventID, userID, status),
         )
         print("Data Saved!")
-        # return response
 
     def getrides_wo_username(
         self, eventId
@@ -81,7 +81,7 @@ class DBController:
     def getrides_username(
         self, eventId, userId
     ):  # to send offered rides data when eventId and userId is provided
-        userId = "khoston10"
+       
         eventId = 4704993
         data = []
         self.cursor.execute(
@@ -106,13 +106,15 @@ class DBController:
 
     def enterUser(self, data):
         print()
-        print('!!In enterUser!!')
-        #Generate username
-        userName = data['firstName'][:3] + data['lastName'] + str(random.randint(10, 99))
+        print("!!In enterUser!!")
+        # Generate username
+        userName = (
+            data["firstName"][:3] + data["lastName"] + str(random.randint(10, 99))
+        )
 
-        #Generate password Hash
-        hashed_password = (hashlib.md5(data['password'].encode())).hexdigest()
-        print('password hex is', hashed_password)
+        # Generate password Hash
+        hashed_password = (hashlib.md5(data["password"].encode())).hexdigest()
+        print("password hex is", hashed_password)
 
         try:
             self.cursor.execute(
@@ -136,5 +138,61 @@ class DBController:
                 )
                 self.mysql.connection.commit()
                 return "Success"
+        except Exception as e:
+            return "error:" + str(e)
+
+    def saveOfferRide(self, data):
+        try:
+
+            # get data from event api
+            event = SGE.Seat_Geek_Api()
+            eventdata = event.getEvent(data["eventId"])
+
+            # append user selected time to the event date and convert it to datetime
+            eventDate = datetime.datetime.strptime(
+                data["eventDate"], "%Y-%m-%d %H:%M:%S"
+            )
+            temp_start_datetime = (
+                str(eventDate.date()) + " " + data["startTime"] + ":00"
+            )
+            start_datetime = datetime.datetime.strptime(
+                temp_start_datetime, "%Y-%m-%d %H:%M:%S"
+            )
+
+            # Save data to event table
+            self.cursor.execute(
+                """INSERT INTO EVENTS (EVENT_ID,EVENT_NAME,FULL_ADDRESS,DESCRIPTION,PERFORMERS_NAMES,PERFORMERS_ID,VENUE_ID,DATE_TIME_LOCAL
+                    ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)""",
+                (
+                    eventdata["id"],
+                    eventdata["title"],
+                    eventdata["full_address"],
+                    eventdata["description"],
+                    eventdata["performers_names"],
+                    eventdata["performers_ids"],
+                    eventdata["venue_id"],
+                    eventdata["datetime_local"],
+                ),
+            )
+            # Save data into the offered rides table
+            self.cursor.execute(
+                """INSERT INTO RIDES_OFFERED (EVENT_ID,USERNAME,CAR_MODEL,NO_OF_SEATS,START_TIME,START_ADDRESS_LINE1,START_ADDRESS_LINE2,START_CITY,START_STATE,START_ZIP_CODE
+                    ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                (
+                    data["eventId"],
+                    data["username"],
+                    data["carModel"],
+                    data["noOfSeats"],
+                    start_datetime,
+                    data["address1"],
+                    data["address2"],
+                    data["city"],
+                    data["state"],
+                    data["zipCode"],
+                ),
+            )
+            self.mysql.connection.commit()
+            print("Data Saved!")
+            return "Success"
         except Exception as e:
             return "error:" + str(e)

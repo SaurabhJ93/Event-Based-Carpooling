@@ -1,18 +1,31 @@
 import React from "react";
 import eventImg from "../../assests/demoimg.jpg";
 import "../../assests/styles/eventStyle.css";
+import OfferRide from "../../components/OfferRideModal"
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
+import { useState } from "react";
 import axios from "axios";
 import Moment from "moment";
+import jwt_decode from 'jwt-decode';
 
 const Event = ({ match }) => {
 
+  let decoded = jwt_decode(localStorage.usertoken); // this will get email from usertoken 
+  const userId = decoded.identity.username  // this will assign the logged in user to userId
+
+  const [showOfferRide, setShowOfferRide] = useState(false);
+
+  const handleSubmit = () => {
+    console.log('Closing modal');
+    setShowOfferRide(false);
+  };
+
+  const handleShow = () => setShowOfferRide(true);
+
   const eventId = match.params.eventid; //URL to fetch event details data from flask/backend server
-
-  const [event, Rides, hasErrors] = useFetch(eventId); // to call flask/backend server
-
+  const [event, Rides, hasErrors] = useFetch(eventId, userId); // to call flask/backend server
+  console.log(Rides);
   const handleSaveRequest = async (index, rideId, eventId) => {
-    const userId = 'aoheffernan3'; //Hardcoded logged In user ID
     try {
       let response = await axios.post("http://localhost:5000/saveRequest", {
         eventId: eventId,
@@ -57,22 +70,26 @@ const Event = ({ match }) => {
             Desciption: <span><em>{event.description}</em></span>
           </p>
           <br />
+          <button type="button" className="btn btn-dark btn-lg ml-4 mb-4" onClick={handleShow}>
+            Offer a Ride
+            </button>
+          <OfferRide show={showOfferRide} onSubmit={handleSubmit} eventId={eventId} userId={userId} eventDate={event.datetime_local} />
         </div>
 
         <div className="col-sm-6">
           <h2 className="h2-request text-center">Request a Ride</h2>
           <span className="d-none ml-2 text-center font-weight-bold span-error">Oops...Seems like some error occured!Try again. </span>
           <ul className="list-group">
-            {Rides.map((ride, i) => (
+            {Rides.length ? Rides.map((ride, i) => (
               <li className="li-req list-group-item py-4 bg-info shadow mb-3 rounded" key={ride.RIDE_ID}>
                 <p className="p-rider"> Rider:
                  <span className="ml-2">{ride.RIDE_HOST_USERNAME}</span>
                 </p>
                 <p className="p-rider">Start Date:
-                <span className="ml-2">{Moment(ride.START_TIME).format('MMM-DD-YYYY')}</span>
+                <span className="ml-2">{ride.START_TIME.split(' ')[0]}</span>
                 </p>
                 <p className="p-rider">Start Time:
-                <span className="ml-2">{Moment(ride.START_TIME).format('hh:mm')}</span>
+                <span className="ml-2">{ride.START_TIME.split(' ')[1]}</span>
                 </p>
                 {ride.STATUS === 'pending' ?
                   <span className="ml-2 float-right span-reqested">Requested! </span> :
@@ -84,7 +101,8 @@ const Event = ({ match }) => {
                   </>
                 }
               </li>
-            ))}
+            ))
+              : <span className="ml-2 text-center font-weight-bold span-norides">No rides available for this event! </span>}
           </ul>
         </div>
 
