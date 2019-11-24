@@ -1,6 +1,7 @@
 import random, hashlib
 from Models.Userdata import userData
 import json, collections, datetime
+import Seat_Geek_API as SGE
 
 
 class DBController:
@@ -141,6 +142,11 @@ class DBController:
 
     def saveOfferRide(self, data):
         try:
+
+            # get data from event api
+            event = SGE.Seat_Geek_Api()
+            eventdata = event.getEvent(data["eventId"])
+
             eventDate = datetime.datetime.strptime(
                 data["eventDate"], "%Y-%m-%d %H:%M:%S"
             )
@@ -150,6 +156,23 @@ class DBController:
             start_datetime = datetime.datetime.strptime(
                 temp_start_datetime, "%Y-%m-%d %H:%M:%S"
             )
+
+            # Save data to event table
+            self.cursor.execute(
+                """INSERT INTO EVENTS (EVENT_ID,EVENT_NAME,FULL_ADDRESS,DESCRIPTION,PERFORMERS_NAMES,PERFORMERS_ID,VENUE_ID,DATE_TIME_LOCAL
+                    ) VALUES(%s,%s,%s,%s,%s,%s,%s)""",
+                (
+                    eventdata["EVENT_ID"],
+                    eventdata["EVENT_NAME"],
+                    eventdata["FULL_ADDRESS"],
+                    eventdata["DESCRIPTION"],
+                    eventdata["PERFORMERS_NAMES"],
+                    eventdata["PERFORMERS_ID"],
+                    eventdata["VENUE_ID"],
+                    eventdata["DATE_TIME_LOCAL"],
+                ),
+            )
+            # Save data into the offered rides table
             self.cursor.execute(
                 """INSERT INTO RIDES_OFFERED (EVENT_ID,USERNAME,CAR_MODEL,NO_OF_SEATS,START_TIME,START_ADDRESS_LINE1,START_ADDRESS_LINE2,START_CITY,START_STATE,START_ZIP_CODE
                     ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
