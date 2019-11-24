@@ -6,10 +6,13 @@ import { useFetch } from "./Backendhooks"; //to handle fetch data request from f
 import { useState } from "react";
 import axios from "axios";
 import Moment from "moment";
+import jwt_decode from 'jwt-decode';
 
 const Event = ({ match }) => {
 
-  const userId = 'ageldartp'; //Hardcoded logged In user ID
+  let decoded = jwt_decode(localStorage.usertoken); // this will get email from usertoken 
+  const userId = decoded.identity.username  // this will assign the logged in user to userId
+
   const [showOfferRide, setShowOfferRide] = useState(false);
 
   const handleSubmit = () => {
@@ -20,8 +23,8 @@ const Event = ({ match }) => {
   const handleShow = () => setShowOfferRide(true);
 
   const eventId = match.params.eventid; //URL to fetch event details data from flask/backend server
-  const [event, Rides, hasErrors] = useFetch(eventId); // to call flask/backend server
-
+  const [event, Rides, hasErrors] = useFetch(eventId, userId); // to call flask/backend server
+  console.log(Rides);
   const handleSaveRequest = async (index, rideId, eventId) => {
     try {
       let response = await axios.post("http://localhost:5000/saveRequest", {
@@ -77,16 +80,16 @@ const Event = ({ match }) => {
           <h2 className="h2-request text-center">Request a Ride</h2>
           <span className="d-none ml-2 text-center font-weight-bold span-error">Oops...Seems like some error occured!Try again. </span>
           <ul className="list-group">
-            {Rides.map((ride, i) => (
+            {Rides.length ? Rides.map((ride, i) => (
               <li className="li-req list-group-item py-4 bg-info shadow mb-3 rounded" key={ride.RIDE_ID}>
                 <p className="p-rider"> Rider:
                  <span className="ml-2">{ride.RIDE_HOST_USERNAME}</span>
                 </p>
                 <p className="p-rider">Start Date:
-                <span className="ml-2">{Moment(ride.START_TIME).format('MMM-DD-YYYY')}</span>
+                <span className="ml-2">{ride.START_TIME.split(' ')[0]}</span>
                 </p>
                 <p className="p-rider">Start Time:
-                <span className="ml-2">{Moment(ride.START_TIME).format('hh:mm')}</span>
+                <span className="ml-2">{ride.START_TIME.split(' ')[1]}</span>
                 </p>
                 {ride.STATUS === 'pending' ?
                   <span className="ml-2 float-right span-reqested">Requested! </span> :
@@ -98,7 +101,8 @@ const Event = ({ match }) => {
                   </>
                 }
               </li>
-            ))}
+            ))
+              : <span className="ml-2 text-center font-weight-bold span-norides">No rides available for this event! </span>}
           </ul>
         </div>
 

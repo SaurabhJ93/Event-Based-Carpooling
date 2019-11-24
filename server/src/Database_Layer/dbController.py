@@ -81,7 +81,7 @@ class DBController:
     def getrides_username(
         self, eventId, userId
     ):  # to send offered rides data when eventId and userId is provided
-        userId = "khoston10"
+       
         eventId = 4704993
         data = []
         self.cursor.execute(

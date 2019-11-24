@@ -127,7 +127,7 @@ def save_request():
     "/event/rides/<eventId>", methods=["GET"]
 )  # handles route of Event page in backend send required data to react
 def rides(eventId):
-    eventId = 4704993  # hardcoded as we have data for this few events only
+    # eventId = 4704993  # hardcoded as we have data for this few events only
     cursor = mysql.connection.cursor()
     controller = DBController(cursor, mysql)
     print(request.args.get("userId"))
@@ -155,7 +155,7 @@ def login():
     rv = cur.fetchone()
 
     if rv['PASSWORD'] == (hashlib.md5(password)).hexdigest(): #hashing password and validating
-        result = create_access_token(identity = {'first_name': rv['FIRST_NAME'],'last_name': rv['LAST_NAME'],'email': rv['EMAIL_ID']})
+        result = create_access_token(identity = {'first_name': rv['FIRST_NAME'],'last_name': rv['LAST_NAME'],'username': rv['USERNAME'],'email': rv['EMAIL_ID']})
     else:
         result = jsonify({"error":"Invalid username and password"})
     
