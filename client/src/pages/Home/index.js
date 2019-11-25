@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 // import Container from "react-bootstrap/Container";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import styled from "styled-components";
 import background from "../../assests/background-event.jpg";
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
+import { checkPropTypes } from "prop-types";
 
 const Styles = styled.div`
  .jumbo{
-    // background: url(${background}) no-repeat fixed bottom;
+    //background: url(${background}) no-repeat fixed bottom;
+    padding: 1em 2em;
     background-color: #7eb3c794;
     color:black;
     margin-top: 0px;
@@ -38,11 +40,14 @@ const Styles = styled.div`
 
 
 
-const Home = () => {
-
-  const url = "/index"; //URL of flask/backend server
+const Home = (props) => {
+  let queryParams = "";
+  if (props.location.state != undefined){
+    queryParams = `?filterValue=${props.location.state.filterValue}&searchValue=${props.location.state.searchValue}`;
+  }
+  const url = "/index" + queryParams; //URL of flask/backend server
+  console.log(url);
   const [Events, hasErrors] = useFetch(url); // to call flask/backend server
-  console.log(Events);
 
   function handleClick(EventId) {
     window.location = "/event/" + EventId;
@@ -51,9 +56,14 @@ const Home = () => {
   return (
     <Styles>
       <div className="container">
-        {Events.map(event => ( //Looping through events to populate data on the jumbotron
+        {Events.length == 0 ?  
+        <Jumbotron className="jumbo">
+          <h2>  No Events found. Try a different search!  </h2>
+        </Jumbotron>
+        :
+        Events.map(event => ( //Looping through events to populate data on the jumbotron
           <Jumbotron className="jumbo" onClick={() => handleClick(event.id)} key={event.id}>
-            <h2> {event.title} </h2>
+           <h2> {event.title} </h2>         
             <br />
             <h5> Performers: </h5>
             {event.performers.length > 3 ?
