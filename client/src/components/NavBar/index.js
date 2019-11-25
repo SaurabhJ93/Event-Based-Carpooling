@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,Component } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Nav from "react-bootstrap/Nav";
@@ -7,6 +7,9 @@ import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import icon from "../../assests/icon.png";
 import Signup from "../SignupModal";
+import Avatar ,{ ConfigProvider } from 'react-avatar';
+import jwt_decode from 'jwt-decode'
+
 import { useHistory } from "react-router-dom";
 
 const imgIcon = {
@@ -50,6 +53,8 @@ const NavBar = props => {
   };
 
   return (
+
+
     <Navbar bg="dark" expand="lg" variant="dark">
       <Navbar.Brand onClick={onSearch} className="ml-lg-5 w-25">
         <Button style={brand}>
@@ -96,8 +101,17 @@ const NavBar = props => {
       <Nav.Link href="/" onClick={onSearch}>Home</Nav.Link>
       { localStorage.usertoken ? 
         [
-        <Nav.Link key="Logout" href="/" onClick={handleLogout} >Logout</Nav.Link>, 
-        <Nav.Link key="Account" href="/user" >Account</Nav.Link>
+        <Nav.Link href="/" onClick={handleLogout} >Logout</Nav.Link>, 
+        <Nav.Link href="/user">
+        
+        
+        
+        
+
+        <Avatar name= {jwt_decode(localStorage.usertoken).identity.first_name} round={true} size={40}>
+        </Avatar>
+        </Nav.Link>
+        //<Nav.Link href="/user" >Profile</Nav.Link>
         ]  :  [
         <Nav.Link key="Login" href="/Login" >Login </Nav.Link>, 
         <Button key="Signup" variant="outline-light" onClick={handleShow}>
@@ -106,8 +120,21 @@ const NavBar = props => {
         <Signup key="Signupmodal" show={showSignup} onSubmit = {handleSubmit}/>
         ]
       }
+      
+      
     </Navbar>
-  );
-};
+
+
+  )
+    
+}
+
 
 export default NavBar;
+
+
+
+
+
+
+
