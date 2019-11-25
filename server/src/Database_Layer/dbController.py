@@ -58,16 +58,17 @@ class DBController:
             [eventId],
         )
         ridesdata = self.cursor.fetchall()
+
         for ride in ridesdata:
             d = collections.OrderedDict()
-            d["FIRST_NAME"] = ride[0]
-            d["LAST_NAME"] = ride[1]
-            d["EVENT_ID"] = ride[2]
-            d["RIDE_ID"] = ride[3]
-            d["USERNAME"] = ride[4]
+            d["FIRST_NAME"] = ride["FIRST_NAME"]
+            d["LAST_NAME"] = ride["LAST_NAME"]
+            d["EVENT_ID"] = ride["EVENT_ID"]
+            d["RIDE_ID"] = ride["RIDE_ID"]
+            d["USERNAME"] = ride["USERNAME"]
             #            d["CAR_MODEL"] = ride[5]
             #            d["NO_OF_SEATS"] = ride[6]
-            d["START_TIME"] = ride[5].strftime("%d-%m-%Y %H:%M:%S")
+            d["START_TIME"] = ride["START_TIME"].strftime("%d-%m-%Y %H:%M:%S")
             #           d["WAIT_TIME"] = datetime.time(ride[8])
             #          d["START_ADDRESS_LINE1"] = ride[9]
             #         d["START_ADDRESS_LINE2"] = ride[10]
@@ -81,7 +82,7 @@ class DBController:
     def getrides_username(
         self, eventId, userId
     ):  # to send offered rides data when eventId and userId is provided
-       
+
         eventId = 4704993
         data = []
         self.cursor.execute(

@@ -83,7 +83,7 @@ def signup():
         return e
 
 
-@app.route("/offerRide", methods=["POST"])  # handles route of signup page
+@app.route("/offerRide", methods=["GET","POST"])  # handles route of signup page
 def offerRide():
     try:
         if request.method == "POST":
@@ -130,7 +130,7 @@ def rides(eventId):
     # eventId = 4704993  # hardcoded as we have data for this few events only
     cursor = mysql.connection.cursor()
     controller = DBController(cursor, mysql)
-    print(request.args.get("userId"))
+    print("user id is: ", request.args.get("userId"))
     if (
         "userId" in request.args and request.args.get("userId") != ""
     ):  # condition to check if userId is sent in request
