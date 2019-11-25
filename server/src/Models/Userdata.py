@@ -23,7 +23,10 @@ class userData():
                 'contact_no': d['PASSENGER_CONTACT'],
                 'email': d['PASSENGER_EMAIL'],
                 'status': d['STATUS'],
-                'request_id': d['REQUEST_ID']
+                'request_id': d['REQUEST_ID'],
+                'event_name':d['EVENT_NAME'],
+                'date_time':d['DATE_TIME'].strftime("%d-%m-%Y %H:%M:%S"),
+                'address':d['ADDRESS']
             })
         
         for d in requested_data:
@@ -35,7 +38,10 @@ class userData():
                 'contact_no': d['HOST_CONTACT'],
                 'email': d['HOST_EMAIL'],
                 'status': d["STATUS"],
-                'request_id': d['REQUEST_ID']
+                'request_id': d['REQUEST_ID'],
+                 'event_name':d['EVENT_NAME'],
+                'date_time':d['DATE_TIME'].strftime("%d-%m-%Y %H:%M:%S"),
+                'address':d['ADDRESS']
             })
 
     def getUserData(self):

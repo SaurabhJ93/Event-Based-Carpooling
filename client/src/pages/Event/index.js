@@ -68,14 +68,14 @@ const Event = ({ match }) => {
             Desciption: <span><em>{event.description}</em></span>
           </p>
           <br />
-          { localStorage.usertoken ? <>
-          <button type="button" className="btn btn-dark btn-lg ml-4 mb-4" onClick={handleShow}>
-            Offer a Ride
+          {localStorage.usertoken ? <>
+            <button type="button" className="btn btn-dark btn-lg ml-4 mb-4" onClick={handleShow}>
+              Offer a Ride
             </button>
             <OfferRide show={showOfferRide} onSubmit={handleSubmit} eventId={eventId} userId={jwt_decode(localStorage.usertoken).identity.username} eventDate={event.datetime_local} />
           </> : <>
               <button type="button" className="btn btn-dark btn-lg ml-4 mb-4" onClick={() => alert("Please login before offering a ride")}>
-              Offer a Ride
+                Offer a Ride
               </button>
               <OfferRide disabled show={showOfferRide} onSubmit={handleSubmit} />
             </>
@@ -89,7 +89,7 @@ const Event = ({ match }) => {
             {Rides.length ? Rides.map((ride, i) => (
               <li className="li-req list-group-item py-4 bg-info shadow mb-3 rounded" key={ride.RIDE_ID}>
                 <p className="p-rider"> Rider:
-                 <span className="ml-2">{ride.RIDE_HOST_USERNAME}</span>
+                 <span className="ml-2">{ride.USERNAME}</span>
                 </p>
                 <p className="p-rider">Start Date:
                 <span className="ml-2">{ride.START_TIME.split(' ')[0]}</span>
@@ -99,13 +99,13 @@ const Event = ({ match }) => {
                 </p>
                 {ride.STATUS === 'pending' ?
                   <span className="ml-2 float-right span-reqested">Requested! </span> :
-                  <> 
+                  <>
                     {localStorage.usertoken ?
                       <>
                         <button key={i} type="button" onClick={() => handleSaveRequest(i, ride.RIDE_ID, match.params.eventid)} className="btn btn-dark btn-lg float-right">
                           Request Ride
                         </button>
-                      </> : 
+                      </> :
                       <>
                         <button key={i} type="button" onClick={() => alert("Please login to reuqest a ride")} className="btn btn-dark btn-lg float-right">
                           Request Ride

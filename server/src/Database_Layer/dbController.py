@@ -11,15 +11,22 @@ class DBController:
 
     def getUser(self, username):
 
-        self.cursor.execute('SELECT * FROM USER_PROFILE WHERE USERNAME = "%s"'% (username)) # To retrieve user profile data for user page
+        self.cursor.execute(
+            'SELECT * FROM USER_PROFILE WHERE USERNAME = "%s"' % (username)
+        )  # To retrieve user profile data for user page
         user_data = self.cursor.fetchall()
         print("user_data", user_data)
 
-        self.cursor.execute('SELECT * FROM REQUESTS WHERE STATUS in ("accepted","pending") and HOST_USERNAME="%s"' % (username) ) #To retrieve data of all requests to user hosted rides
+        self.cursor.execute(
+            'SELECT * FROM REQUESTS WHERE STATUS in ("accepted","pending") and HOST_USERNAME="%s"'
+            % (username)
+        )  # To retrieve data of all requests to user hosted rides
         offered_data = self.cursor.fetchall()
         print("offered_data", offered_data)
 
-        self.cursor.execute('SELECT * FROM REQUESTS WHERE PASSENGER_USERNAME="%s"' % (username)) # To retrieve data of all requests made by user to other rides
+        self.cursor.execute(
+            'SELECT * FROM REQUESTS WHERE PASSENGER_USERNAME="%s"' % (username)
+        )  # To retrieve data of all requests made by user to other rides
         requested_data = self.cursor.fetchall()
         print("requested_data", requested_data)
 
@@ -34,11 +41,18 @@ class DBController:
         )
         self.mysql.connection.commit()
         print("Data Saved!")
-    
-    def updateRequest(self, requestId, status): #To update the status of the request to ride
-        self.cursor.execute("""UPDATE RIDES_REQUESTED SET STATUS=%s WHERE REQUEST_ID=%s""", (status, requestId),)
+
+    def updateRequest(
+        self, requestId, status
+    ):  # To update the status of the request to ride
+        self.cursor.execute(
+            """UPDATE RIDES_REQUESTED SET STATUS=%s WHERE REQUEST_ID=%s""",
+            (status, requestId),
+        )
         self.mysql.connection.commit()
-        self.cursor.execute('SELECT STATUS FROM REQUESTS WHERE REQUEST_ID=%s'%(requestId))
+        self.cursor.execute(
+            "SELECT STATUS FROM REQUESTS WHERE REQUEST_ID=%s" % (requestId)
+        )
         return status
 
     def getrides_wo_username(
@@ -46,16 +60,22 @@ class DBController:
     ):  # to send offered rides data when eventId is provided
         data = []
         self.cursor.execute(
-            """SELECT EVENT_ID, RIDE_ID, HOST_USERNAME, START_TIME FROM REQUESTS WHERE EVENT_ID = %s""",
+            """ 
+        SELECT U.FIRST_NAME, U.LAST_NAME, RO.EVENT_ID, RO.RIDE_ID, RO.USERNAME, RO.START_TIME   
+            FROM RIDES_OFFERED AS RO INNER JOIN USER AS U 
+            ON U.USERNAME = RO.USERNAME AND RO.EVENT_ID=%s""",
             [eventId],
         )
         ridesdata = self.cursor.fetchall()
+        print(ridesdata)
         for ride in ridesdata:
             d = collections.OrderedDict()
+            d["FIRST_NAME"] = ride["FIRST_NAME"]
+            d["LAST_NAME"] = ride["LAST_NAME"]
             d["EVENT_ID"] = ride["EVENT_ID"]
             d["RIDE_ID"] = ride["RIDE_ID"]
-            d["RIDE_HOST_USERNAME"] = ride["HOST_USERNAME"]
-            d["START_TIME"] = ride["START_TIME"].strftime("%d-%m-%Y %H:%M")
+            d["USERNAME"] = ride["USERNAME"]
+            d["START_TIME"] = ride["START_TIME"].strftime("%d-%m-%Y %H:%M:%S")
             data.append(d)
         final_dat = json.dumps(data)
         return final_dat
@@ -63,9 +83,13 @@ class DBController:
     def getrides_username(
         self, eventId, userId
     ):  # to send offered rides data when eventId and userId is provided
+
         data = []
         self.cursor.execute(
-            """ SELECT EVENT_ID, RIDE_ID, HOST_USERNAME, START_TIME, STATUS FROM REQUESTS WHERE EVENT_ID=%s AND HOST_USERNAME NOT IN (%s) """,
+            """ 
+        SELECT RO.EVENT_ID, RO.RIDE_ID, RO.USERNAME, RO.START_TIME, RR.STATUS
+        FROM (SELECT * FROM RIDES_OFFERED WHERE EVENT_ID= %s AND USERNAME NOT IN (%s) ) AS RO 
+        LEFT OUTER JOIN RIDES_REQUESTED AS RR ON RR.RIDE_ID = RO.RIDE_ID""",
             [eventId, userId],
         )
         ridesdata = self.cursor.fetchall()
@@ -74,8 +98,8 @@ class DBController:
             d = collections.OrderedDict()
             d["EVENT_ID"] = ride["EVENT_ID"]
             d["RIDE_ID"] = ride["RIDE_ID"]
-            d["RIDE_HOST_USERNAME"] = ride["HOST_USERNAME"]
-            d["START_TIME"] = ride["START_TIME"].strftime("%d-%m-%Y %H:%M")
+            d["USERNAME"] = ride["USERNAME"]
+            d["START_TIME"] = ride["START_TIME"].strftime("%d-%m-%Y %H:%M:%S")
             d["STATUS"] = ride["STATUS"] or "NULL"
             data.append(d)
         final_dat = json.dumps(data)
@@ -135,9 +159,15 @@ class DBController:
             start_datetime = datetime.datetime.strptime(
                 temp_start_datetime, "%Y-%m-%d %H:%M:%S"
             )
+            
+            # get all the rows from events table for the given eventID
+            self.cursor.execute('select * from EVENTS where EVENT_ID ="%s"' % data["eventId"])
+            response = self.cursor.fetchall()
 
-            # Save data to event table
-            self.cursor.execute(
+            #Skip inserting into EVENTS table if row is already present for that eventID
+            if not response:
+                # Save data to event table
+                self.cursor.execute(
                 """INSERT INTO EVENTS (EVENT_ID,EVENT_NAME,FULL_ADDRESS,DESCRIPTION,PERFORMERS_NAMES,PERFORMERS_ID,VENUE_ID,DATE_TIME_LOCAL
                     ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)""",
                 (
@@ -150,7 +180,8 @@ class DBController:
                     eventdata["venue_id"],
                     eventdata["datetime_local"],
                 ),
-            )
+                )
+
             # Save data into the offered rides table
             self.cursor.execute(
                 """INSERT INTO RIDES_OFFERED (EVENT_ID,USERNAME,CAR_MODEL,NO_OF_SEATS,START_TIME,START_ADDRESS_LINE1,START_ADDRESS_LINE2,START_CITY,START_STATE,START_ZIP_CODE
