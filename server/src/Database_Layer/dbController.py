@@ -89,8 +89,8 @@ class DBController:
             """ 
         SELECT RO.EVENT_ID, RO.RIDE_ID, RO.USERNAME, RO.START_TIME, RR.STATUS
         FROM (SELECT * FROM RIDES_OFFERED WHERE EVENT_ID= %s AND USERNAME NOT IN (%s) ) AS RO 
-        LEFT OUTER JOIN RIDES_REQUESTED AS RR ON RR.RIDE_ID = RO.RIDE_ID""",
-            [eventId, userId],
+        LEFT OUTER JOIN RIDES_REQUESTED AS RR ON RR.RIDE_ID = RO.RIDE_ID AND RR.USERNAME=%s""",
+            [eventId, userId, userId],
         )
         ridesdata = self.cursor.fetchall()
         for ride in ridesdata:
