@@ -111,7 +111,7 @@ const User = () => {
         <div className="col-sm-4 text-right" >
           <img className="masthead-avatar mb-5" src={userImg} alt="profile pic" />
         </div>
-        <div className="user-data col-sm-4">
+        <div className="user-data col-sm-6">
           <p className="masthead-name text-uppercase mb-2 mt-4"> {user.name + " ( " + user.username + " ) "} </p>
           <p className="mb-2" > {user.contact} </p>
           <p className="mb-2" > {user.email} </p>
@@ -146,7 +146,7 @@ const User = () => {
                                     </button>
                     </>
                       :
-                      <button type="button" className="btn btn-dark btn-sm float-right mr-2 font-weight-bold" disabled>
+                      <button type="button" className="btn btn-dark btn-md float-right mr-2 font-weight-bold" disabled>
                         Already Accepted!
                                     </button>
                     }

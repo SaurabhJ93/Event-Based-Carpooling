@@ -50,8 +50,12 @@
 
 .list-group-item span
 {
-    font-weight: bold;
+    /* font-weight: bold; */
 }
+.list-group-item p{
+    font-size: 1.0em;
+ }
+
 .user-offered-rides,.user-requested-rides {
     font-family: sans serif;
     font-size: 1.2em;
