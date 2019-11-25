@@ -62,11 +62,19 @@ class FlaskTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)  # Testing if endpoint is hitting
 
     # Tests the event page endpoint - data is returning and correct data is present
-    def test_eventData(self):
+    @patch('Seat_Geek_API.requests.get')
+    def test_eventData(self,mock_get):
+        raise_for_status = Mock
+        mock_get.return_value.raise_for_status = raise_for_status
+        fSample = open("sampleData.json")
+        sampleData = json.load(fSample)       
+        mock_get.return_value = sampleData["eventData"]
         response = self.app.get(BASE_URL + "/event/" + eventId)
         data = json.loads(response.get_data())
-        self.assertIn("performers_names", str(data))
-        self.assertEqual(response.status_code, 200)
+        fSample.close()
+        print("checking response code. is: ", response.status_code)
+        mock_get.assert_called_once()
+        self.assertEqual(response.status_code, 200)  # Testing if endpoint is hitting
 
     # Tests the offered rides data endpoint - data is returning and correct data is present
     def test_rideOffered(self):
