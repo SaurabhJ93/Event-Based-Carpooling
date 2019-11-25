@@ -84,10 +84,12 @@ class DBController:
         self, eventId, userId
     ):  # to send offered rides data when eventId and userId is provided
 
-        # eventId = 4704993
         data = []
         self.cursor.execute(
-            """ SELECT EVENT_ID, RIDE_ID, HOST_USERNAME, START_TIME, STATUS FROM REQUESTS WHERE EVENT_ID=%s AND HOST_USERNAME NOT IN (%s) """,
+            """ 
+        SELECT RO.EVENT_ID, RO.RIDE_ID, RO.USERNAME, RO.START_TIME, RR.STATUS
+        FROM (SELECT * FROM RIDES_OFFERED WHERE EVENT_ID= %s AND USERNAME NOT IN (%s) ) AS RO 
+        LEFT OUTER JOIN RIDES_REQUESTED AS RR ON RR.RIDE_ID = RO.RIDE_ID""",
             [eventId, userId],
         )
         ridesdata = self.cursor.fetchall()
@@ -96,8 +98,8 @@ class DBController:
             d = collections.OrderedDict()
             d["EVENT_ID"] = ride["EVENT_ID"]
             d["RIDE_ID"] = ride["RIDE_ID"]
-            d["RIDE_HOST_USERNAME"] = ride["HOST_USERNAME"]
-            d["START_TIME"] = ride["START_TIME"].strftime("%d-%m-%Y %H:%M")
+            d["USERNAME"] = ride["USERNAME"]
+            d["START_TIME"] = ride["START_TIME"].strftime("%d-%m-%Y %H:%M:%S")
             d["STATUS"] = ride["STATUS"] or "NULL"
             data.append(d)
         final_dat = json.dumps(data)
@@ -157,9 +159,15 @@ class DBController:
             start_datetime = datetime.datetime.strptime(
                 temp_start_datetime, "%Y-%m-%d %H:%M:%S"
             )
+            
+            # get all the rows from events table for the given eventID
+            self.cursor.execute('select * from EVENTS where EVENT_ID ="%s"' % data["eventId"])
+            response = self.cursor.fetchall()
 
-            # Save data to event table
-            self.cursor.execute(
+            #Skip inserting into EVENTS table if row is already present for that eventID
+            if not response:
+                # Save data to event table
+                self.cursor.execute(
                 """INSERT INTO EVENTS (EVENT_ID,EVENT_NAME,FULL_ADDRESS,DESCRIPTION,PERFORMERS_NAMES,PERFORMERS_ID,VENUE_ID,DATE_TIME_LOCAL
                     ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)""",
                 (
@@ -172,7 +180,8 @@ class DBController:
                     eventdata["venue_id"],
                     eventdata["datetime_local"],
                 ),
-            )
+                )
+
             # Save data into the offered rides table
             self.cursor.execute(
                 """INSERT INTO RIDES_OFFERED (EVENT_ID,USERNAME,CAR_MODEL,NO_OF_SEATS,START_TIME,START_ADDRESS_LINE1,START_ADDRESS_LINE2,START_CITY,START_STATE,START_ZIP_CODE

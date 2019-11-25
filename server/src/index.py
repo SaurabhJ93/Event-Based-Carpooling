@@ -5,7 +5,7 @@ from flask import abort
 from datetime import datetime
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
-from flask_jwt_extended import (create_access_token)
+from flask_jwt_extended import create_access_token
 
 import Seat_Geek_API as SGE
 from Database_Layer.dbController import DBController
@@ -22,34 +22,36 @@ app.config["MYSQL_USER"] = DB_config.MYSQL_USER
 app.config["MYSQL_PASSWORD"] = DB_config.MYSQL_PASSWORD
 app.config["MYSQL_DB"] = DB_config.MYSQL_DB
 app.config["CORS_HEADERS"] = DB_config.CORS_HEADERS
-app.config['MYSQL_CURSORCLASS'] = DB_config.MYSQL_CURSORCLASS
-app.config['JWT_SECRET_KEY'] = DB_config.JWT_SECRET_KEY
+app.config["MYSQL_CURSORCLASS"] = DB_config.MYSQL_CURSORCLASS
+app.config["JWT_SECRET_KEY"] = DB_config.JWT_SECRET_KEY
 mysql = MySQL(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
 
-@app.route("/index", methods=["GET"])  # handles route of home page in backend send required data to react
+@app.route(
+    "/index", methods=["GET"]
+)  # handles route of home page in backend send required data to react
 def index():
     events = SGE.Seat_Geek_Api()
     print()
     if request.args:
-        filterValue = ((request.args.get('filterValue')).split('%20'))[0]
-        searchValue = request.args.get('searchValue')
-        print('filterValue is', filterValue, 'searchValue is', searchValue)
-        if filterValue == 'City':
+        filterValue = ((request.args.get("filterValue")).split("%20"))[0]
+        searchValue = request.args.get("searchValue")
+        print("filterValue is", filterValue, "searchValue is", searchValue)
+        if filterValue == "City":
             eventsdata = events.getByVenue(searchValue)
-        elif filterValue == 'Date':
+        elif filterValue == "Date":
             eventsdata = events.getByDate(searchValue)
-        elif filterValue == 'Performer':
-            eventsdata = events.getByPerformer(searchValue.replace(' ', '-'))
-        elif filterValue == 'No Filter' and searchValue !="":
-            eventsdata = events.getByQuery(searchValue.replace(' ', '+'))
+        elif filterValue == "Performer":
+            eventsdata = events.getByPerformer(searchValue.replace(" ", "-"))
+        elif filterValue == "No Filter" and searchValue != "":
+            eventsdata = events.getByQuery(searchValue.replace(" ", "+"))
         else:
-            eventsdata = events.getallEvents()            
-        
+            eventsdata = events.getallEvents()
+
     else:
-        print('No filter arguments found')
+        print("No filter arguments found")
         eventsdata = events.getallEvents()
     return eventsdata
 
@@ -101,13 +103,13 @@ def signup():
         return e
 
 
-@app.route("/offerRide", methods=["GET","POST"])  # handles route of signup page
+@app.route("/offerRide", methods=["GET", "POST"])  # handles route of signup page
 def offerRide():
     try:
         if request.method == "POST":
 
             data = request.get_json(silent=True)
-            print("Received data is", request.get_json())
+            print("Received offer ride data is", request.get_json())
             cursor = mysql.connection.cursor()
             controller = DBController(cursor, mysql)
             response = controller.saveOfferRide(data)
@@ -140,6 +142,7 @@ def save_request():
     Response = app.response_class()
     return Response
 
+
 @app.route("/users/modifyRequest", methods=["POST"])
 def modifyRequest():
     data = request.get_json(silent=True)
@@ -150,10 +153,16 @@ def modifyRequest():
         if result == data["status"]:
             return result
         else:
-            response = json.loads(json.dumps({"status":"error", "message":"Error while modifying request"}))
+            response = json.loads(
+                json.dumps(
+                    {"status": "error", "message": "Error while modifying request"}
+                )
+            )
             (abort(500, {"response": response}))
     else:
-        response = json.loads(json.dumps({"status":"error", "message":"Invalid status. Please check"}))
+        response = json.loads(
+            json.dumps({"status": "error", "message": "Invalid status. Please check"})
+        )
         (abort(500, {"response": response}))
 
 
@@ -165,8 +174,8 @@ def rides(eventId):
     cursor = mysql.connection.cursor()
     controller = DBController(cursor, mysql)
     print("user id is: ", request.args.get("userId"))
-    if (
-        "userId" in request.args and (request.args.get("userId") not in ["","None", "undefined"])
+    if "userId" in request.args and (
+        request.args.get("userId") not in ["", "None", "undefined"]
     ):  # condition to check if userId is sent in request
         response = controller.getrides_username(
             eventId, request.args.get("userId")
@@ -176,23 +185,32 @@ def rides(eventId):
             eventId
         )  # sending all offered rides data for any given event
     return response
-	
 
-@app.route('/users/login', methods=['POST'])
+
+@app.route("/users/login", methods=["POST"])
 def login():
     cur = mysql.connection.cursor()
-    email = request.get_json()['email']
-    password = request.get_json()['password'].encode('utf-8')
+    email = request.get_json()["email"]
+    password = request.get_json()["password"].encode("utf-8")
     result = ""
-	
+
     cur.execute("SELECT * FROM USER where email_id = '" + str(email) + "'")
     rv = cur.fetchone()
 
-    if rv['PASSWORD'] == (hashlib.md5(password)).hexdigest(): #hashing password and validating
-        result = create_access_token(identity = {'first_name': rv['FIRST_NAME'],'last_name': rv['LAST_NAME'],'username': rv['USERNAME'],'email': rv['EMAIL_ID']})
+    if (
+        rv["PASSWORD"] == (hashlib.md5(password)).hexdigest()
+    ):  # hashing password and validating
+        result = create_access_token(
+            identity={
+                "first_name": rv["FIRST_NAME"],
+                "last_name": rv["LAST_NAME"],
+                "username": rv["USERNAME"],
+                "email": rv["EMAIL_ID"],
+            }
+        )
     else:
-        result = jsonify({"error":"Invalid username and password"})
-    
+        result = jsonify({"error": "Invalid username and password"})
+
     return result
 
 
