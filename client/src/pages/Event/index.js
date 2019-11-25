@@ -10,9 +10,6 @@ import jwt_decode from 'jwt-decode';
 
 const Event = ({ match }) => {
 
-  let decoded = jwt_decode(localStorage.usertoken); // this will get email from usertoken 
-  const userId = decoded.identity.username  // this will assign the logged in user to userId
-
   const [showOfferRide, setShowOfferRide] = useState(false);
 
   const handleSubmit = () => {
@@ -23,13 +20,14 @@ const Event = ({ match }) => {
   const handleShow = () => setShowOfferRide(true);
 
   const eventId = match.params.eventid; //URL to fetch event details data from flask/backend server
-  const [event, Rides, hasErrors] = useFetch(eventId, userId); // to call flask/backend server
+  const [event, Rides, hasErrors] = useFetch(eventId); // to call flask/backend server
   console.log(Rides);
   const handleSaveRequest = async (index, rideId, eventId) => {
+    let decoded = jwt_decode(localStorage.usertoken);
     try {
       let response = await axios.post("http://localhost:5000/saveRequest", {
         eventId: eventId,
-        userId: userId,
+        userId: decoded.identity.username,
         rideId: rideId
       }, { 'Content-Type': 'application/json' });
 
@@ -70,10 +68,18 @@ const Event = ({ match }) => {
             Desciption: <span><em>{event.description}</em></span>
           </p>
           <br />
+          { localStorage.usertoken ? <>
           <button type="button" className="btn btn-dark btn-lg ml-4 mb-4" onClick={handleShow}>
             Offer a Ride
             </button>
-          <OfferRide show={showOfferRide} onSubmit={handleSubmit} eventId={eventId} userId={userId} eventDate={event.datetime_local} />
+            <OfferRide show={showOfferRide} onSubmit={handleSubmit} eventId={eventId} userId={jwt_decode(localStorage.usertoken).identity.username} eventDate={event.datetime_local} />
+          </> : <>
+              <button type="button" className="btn btn-dark btn-lg ml-4 mb-4" onClick={() => alert("Please login before offering a ride")}>
+              Offer a Ride
+              </button>
+              <OfferRide disabled show={showOfferRide} onSubmit={handleSubmit} />
+            </>
+          }
         </div>
 
         <div className="col-sm-6">
@@ -93,10 +99,19 @@ const Event = ({ match }) => {
                 </p>
                 {ride.STATUS === 'pending' ?
                   <span className="ml-2 float-right span-reqested">Requested! </span> :
-                  <>
-                    <button key={i} type="button" onClick={() => handleSaveRequest(i, ride.RIDE_ID, match.params.eventid)} className="btn btn-dark btn-lg float-right">
-                      Request Ride
-                     </button>
+                  <> 
+                    {localStorage.usertoken ?
+                      <>
+                        <button key={i} type="button" onClick={() => handleSaveRequest(i, ride.RIDE_ID, match.params.eventid)} className="btn btn-dark btn-lg float-right">
+                          Request Ride
+                        </button>
+                      </> : 
+                      <>
+                        <button key={i} type="button" onClick={() => alert("Please login to reuqest a ride")} className="btn btn-dark btn-lg float-right">
+                          Request Ride
+                        </button>
+                      </>
+                    }
                     <span className="d-none ml-2 float-right span-reqested">Requested! </span>
                   </>
                 }

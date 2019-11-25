@@ -32,7 +32,25 @@ jwt = JWTManager(app)
 @app.route("/index", methods=["GET"])  # handles route of home page in backend send required data to react
 def index():
     events = SGE.Seat_Geek_Api()
-    eventsdata = events.getallEvents()
+    print()
+    if request.args:
+        filterValue = ((request.args.get('filterValue')).split('%20'))[0]
+        searchValue = request.args.get('searchValue')
+        print('filterValue is', filterValue, 'searchValue is', searchValue)
+        if filterValue == 'City':
+            eventsdata = events.getByVenue(searchValue)
+        elif filterValue == 'Date':
+            eventsdata = events.getByDate(searchValue)
+        elif filterValue == 'Performer':
+            eventsdata = events.getByPerformer(searchValue.replace(' ', '-'))
+        elif filterValue == 'No Filter' and searchValue !="":
+            eventsdata = events.getByQuery(searchValue.replace(' ', '+'))
+        else:
+            eventsdata = events.getallEvents()            
+        
+    else:
+        print('No filter arguments found')
+        eventsdata = events.getallEvents()
     return eventsdata
 
 
@@ -43,7 +61,7 @@ def getUsers(userid):
     response = controller.getUser(userid)
 
     print("db op", response)
-    return str(response)
+    return response
 
 
 @app.route(
@@ -122,6 +140,22 @@ def save_request():
     Response = app.response_class()
     return Response
 
+@app.route("/users/modifyRequest", methods=["POST"])
+def modifyRequest():
+    data = request.get_json(silent=True)
+    cursor = mysql.connection.cursor()
+    controller = DBController(cursor, mysql)
+    if data["status"] in ["accepted", "declined"]:
+        result = controller.updateRequest(data["requestId"], data["status"])
+        if result == data["status"]:
+            return result
+        else:
+            response = json.loads(json.dumps({"status":"error", "message":"Error while modifying request"}))
+            (abort(500, {"response": response}))
+    else:
+        response = json.loads(json.dumps({"status":"error", "message":"Invalid status. Please check"}))
+        (abort(500, {"response": response}))
+
 
 @app.route(
     "/event/rides/<eventId>", methods=["GET"]
@@ -132,7 +166,7 @@ def rides(eventId):
     controller = DBController(cursor, mysql)
     print("user id is: ", request.args.get("userId"))
     if (
-        "userId" in request.args and request.args.get("userId") != ""
+        "userId" in request.args and (request.args.get("userId") not in ["","None", "undefined"])
     ):  # condition to check if userId is sent in request
         response = controller.getrides_username(
             eventId, request.args.get("userId")
