@@ -194,29 +194,26 @@ def rides(eventId):
 
 @app.route("/users/login", methods=["POST"])
 def login():
-    cur = mysql.connection.cursor()
-    email = request.get_json()["email"]
-    password = request.get_json()["password"].encode("utf-8")
-    result = ""
+    # cur = mysql.connection.cursor()
+    email = request.get_json()['email']
+    password = request.get_json()['password'].encode('utf-8')
+    # result = ""
 
-    cur.execute("SELECT * FROM USER where email_id = '" + str(email) + "'")
-    rv = cur.fetchone()
+    cursor = mysql.connection.cursor()
+    connection = mysql.connection
+    controller = DBController(cursor, connection)
+    rv = controller.Userlogin(email,password)
 
-    if (
-        rv["PASSWORD"] == (hashlib.md5(password)).hexdigest()
-    ):  # hashing password and validating
-        result = create_access_token(
-            identity={
-                "first_name": rv["FIRST_NAME"],
-                "last_name": rv["LAST_NAME"],
-                "username": rv["USERNAME"],
-                "email": rv["EMAIL_ID"],
-            }
-        )
+    # cur.execute("SELECT * FROM USER where email_id = '" + str(email) + "'")
+    # rv = cur.fetchone()
+    print(rv)
+    if rv['PASSWORD'] == (hashlib.md5(password)).hexdigest(): #hashing password and validating
+        result = create_access_token(identity = {'first_name': rv['FIRST_NAME'],'last_name': rv['LAST_NAME'],'username': rv['USERNAME'],'email': rv['EMAIL_ID']})
     else:
-        result = jsonify({"error": "Invalid username and password"})
-
+        result = jsonify({"error":"Invalid username and password"})
+    
     return result
+
 
 
 if __name__ == "__main__":
