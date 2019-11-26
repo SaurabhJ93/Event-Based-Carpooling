@@ -148,6 +148,7 @@ class DBController:
             # get data from event api
             event = SGE.Seat_Geek_Api()
             eventdata = event.getEvent(data["eventId"])
+            print('data', data)
 
             # append user selected time to the event date and convert it to datetime
             eventDate = datetime.datetime.strptime(

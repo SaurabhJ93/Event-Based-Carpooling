@@ -24,6 +24,19 @@ class TestDBController(unittest.TestCase):
         self.email='fak1e@gmail.com'
         self.phoneNumber = '123-456-7890'
         self.password = "welcome123"
+        self.offerData = {
+            "eventId": "5026583",
+            "username": "audenv",
+            "carModel": "BMW",
+            "noOfSeats": "2",
+            "startTime": "2019-11-18 01:52:40",
+            "address1": "3456 test lane",
+            "address2": "",
+            "city": "Charlotte",
+            "state": "NC",
+            "zipCode": "28243",
+            "eventDate": "03:30:00",
+        }
 
     def tearDown(self):
         self.cur.close()
@@ -112,6 +125,33 @@ class TestDBController(unittest.TestCase):
         self.assertEqual(response, "Email already present. Try a new email-id")
         #To delete inserted data
         self.cur.execute(""" DELETE FROM USER WHERE FIRST_NAME=%s AND LAST_NAME=%s""", (self.firstName, self.lastName))
+        self.db.commit()
+
+    def test_saveOfferRide(self):
+        response = self.controller.saveOfferRide(self.offerData)
+        print(response)
+        self.cur.execute(
+            """SELECT * FROM RIDES_OFFERED WHERE EVENT_ID=%s AND USERNAME=%s""",
+            (self.offerData["eventId"], self.offerData["username"]),
+        )
+        result = self.cur.fetchall()[0]
+        print("result is:", result)
+        self.assertEqual(result[0], self.offerData["eventId"])
+        self.assertEqual(result[2], self.offerData["username"])
+        self.assertEqual(result[3], self.offerData["carModel"])
+        self.assertEqual(result[4], self.offerData["noOfSeats"])
+        self.assertEqual(result[5], self.offerData["startTime"])
+        self.assertEqual(result[6], self.offerData["address1"])
+        self.assertEqual(result[7], self.offerData["address2"])
+        self.assertEqual(result[8], self.offerData["city"])
+        self.assertEqual(result[9], self.offerData["state"])
+        self.assertEqual(result[10], self.offerData["zipCode"])
+
+        # To delete inserted data
+        self.cur.execute(
+            """ DELETE FROM RIDES_OFFERED WHERE WHERE EVENT_ID=%s AND USERNAME=%s""",
+            (self.offerData["EVENT_ID"], self.offerData["USERNAME"]),
+        )
         self.db.commit()
 
 
