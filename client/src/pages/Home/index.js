@@ -1,10 +1,8 @@
-import React, { useState } from "react";
-// import Container from "react-bootstrap/Container";
+import React from "react";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import styled from "styled-components";
 import background from "../../assests/background-event.jpg";
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
-import { checkPropTypes } from "prop-types";
 
 const Styles = styled.div`
  .jumbo{
@@ -42,7 +40,7 @@ const Styles = styled.div`
 
 const Home = (props) => {
   let queryParams = "";
-  if (props.location.state != undefined){
+  if (props.location.state !== undefined){
     queryParams = `?filterValue=${props.location.state.filterValue}&searchValue=${props.location.state.searchValue}`;
   }
   const url = "/index" + queryParams; //URL of flask/backend server
@@ -56,7 +54,7 @@ const Home = (props) => {
   return (
     <Styles>
       <div className="container">
-        {Events.length == 0 ?  
+        {Events.length === 0 ?  
         <Jumbotron className="jumbo">
           <h2>  No Events found. Try a different search!  </h2>
         </Jumbotron>

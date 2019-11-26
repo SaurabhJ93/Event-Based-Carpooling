@@ -1,4 +1,4 @@
-import React, { useState,Component } from "react";
+import React, { useState } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Nav from "react-bootstrap/Nav";
@@ -7,7 +7,7 @@ import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import icon from "../../assests/icon.png";
 import Signup from "../SignupModal";
-import Avatar ,{ ConfigProvider } from 'react-avatar';
+import Avatar from 'react-avatar';
 import jwt_decode from 'jwt-decode'
 
 import { useHistory } from "react-router-dom";
@@ -22,7 +22,7 @@ const brand = {
   borderColor: "darkslategrey"
 };
 
-const NavBar = props => {
+const NavBar = () => {
 
   const [showSignup, setShowSignup] = useState(false);
   const [filterValue, setFilterValue] = useState("No Filter");
@@ -71,7 +71,7 @@ const NavBar = props => {
           <NavDropdown.Item as='text' onClick={filterChange}>Date</NavDropdown.Item>
         </NavDropdown>
 
-        {filterValue == 'Date' &&
+        {filterValue === 'Date' &&
         <FormControl
         type="date"
         placeholder="mm/dd/yy"
@@ -79,7 +79,7 @@ const NavBar = props => {
         name = "searchValue"
         />
         }
-        {filterValue == 'City' &&
+        {filterValue === 'City' &&
         <Form.Control as="select" className="mr-sm-2 w-50" name = "searchValue">
           <option value="Charlotte">Charlotte</option>
           <option value="Chicago">Chicago</option>
@@ -87,8 +87,8 @@ const NavBar = props => {
           <option value="New York">New York</option>
         </Form.Control>
         }
-        {filterValue != 'Date' &&
-        filterValue != 'City' &&
+        {filterValue !== 'Date' &&
+        filterValue !== 'City' &&
         <FormControl
         type="text"
         placeholder=""

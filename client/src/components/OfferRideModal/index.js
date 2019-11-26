@@ -44,7 +44,7 @@ const OfferRide = (props) => {
             .then(res => res.json())
             .then((res) => {
                 console.log('Data received is', res);
-                if (res['response'] == 'Success') {
+                if (res['response'] === 'Success') {
                     setShowToast(true);
                 }
                 else {

@@ -59,7 +59,8 @@ def index():
 @app.route("/getusers/<userid>", methods=["GET"])
 def getUsers(userid):
     cursor = mysql.connection.cursor()
-    controller = DBController(cursor, mysql)
+    connection = mysql.connection
+    controller = DBController(cursor, connection)
     response = controller.getUser(userid)
 
     print("db op", response)
@@ -83,7 +84,8 @@ def signup():
             data = request.get_json(silent=True)
             print("Received data is", request.get_json())
             cursor = mysql.connection.cursor()
-            controller = DBController(cursor, mysql)
+            connection = mysql.connection
+            controller = DBController(cursor, connection)
             response = controller.enterUser(data)
 
             if response == "Success":
@@ -111,7 +113,8 @@ def offerRide():
             data = request.get_json(silent=True)
             print("Received offer ride data is", request.get_json())
             cursor = mysql.connection.cursor()
-            controller = DBController(cursor, mysql)
+            connection = mysql.connection
+            controller = DBController(cursor, connection)
             response = controller.saveOfferRide(data)
             if response == "Success":
                 returnData = {"response": response}
@@ -135,10 +138,10 @@ def save_request():
     status = "pending"
     # print(RideID, eventID, userID, status)
     cursor = mysql.connection.cursor()
-    controller = DBController(cursor, mysql)
+    connection = mysql.connection
+    controller = DBController(cursor, connection)
     # controller.saveRequest("124", "1", "ageldartp", "pending")
     controller.saveRequest(RideID, eventID, userID, status)
-    mysql.connection.commit()
     Response = app.response_class()
     return Response
 
@@ -147,7 +150,8 @@ def save_request():
 def modifyRequest():
     data = request.get_json(silent=True)
     cursor = mysql.connection.cursor()
-    controller = DBController(cursor, mysql)
+    connection = mysql.connection
+    controller = DBController(cursor, connection)
     if data["status"] in ["accepted", "declined"]:
         result = controller.updateRequest(data["requestId"], data["status"])
         if result == data["status"]:
@@ -172,7 +176,8 @@ def modifyRequest():
 def rides(eventId):
     # eventId = 4704993  # hardcoded as we have data for this few events only
     cursor = mysql.connection.cursor()
-    controller = DBController(cursor, mysql)
+    connection = mysql.connection
+    controller = DBController(cursor, connection)
     print("user id is: ", request.args.get("userId"))
     if "userId" in request.args and (
         request.args.get("userId") not in ["", "None", "undefined"]
