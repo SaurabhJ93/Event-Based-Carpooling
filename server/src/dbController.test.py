@@ -29,13 +29,13 @@ class TestDBController(unittest.TestCase):
             "username": "audenv",
             "carModel": "BMW",
             "noOfSeats": "2",
-            "startTime": "2019-11-18 01:52:40",
+            "startTime": "01:52",
             "address1": "3456 test lane",
             "address2": "",
             "city": "Charlotte",
             "state": "NC",
             "zipCode": "28243",
-            "eventDate": "03:30:00",
+            "eventDate": "2019-11-18 01:52:40",
         }
 
     def tearDown(self):
@@ -140,7 +140,6 @@ class TestDBController(unittest.TestCase):
         self.assertEqual(result[2], self.offerData["username"])
         self.assertEqual(result[3], self.offerData["carModel"])
         self.assertEqual(result[4], self.offerData["noOfSeats"])
-        self.assertEqual(result[5], self.offerData["startTime"])
         self.assertEqual(result[6], self.offerData["address1"])
         self.assertEqual(result[7], self.offerData["address2"])
         self.assertEqual(result[8], self.offerData["city"])
@@ -149,8 +148,8 @@ class TestDBController(unittest.TestCase):
 
         # To delete inserted data
         self.cur.execute(
-            """ DELETE FROM RIDES_OFFERED WHERE WHERE EVENT_ID=%s AND USERNAME=%s""",
-            (self.offerData["EVENT_ID"], self.offerData["USERNAME"]),
+            """ DELETE FROM RIDES_OFFERED WHERE EVENT_ID=%s AND USERNAME=%s""",
+            (self.offerData["eventId"], self.offerData["username"]),
         )
         self.db.commit()
 
