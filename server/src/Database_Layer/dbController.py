@@ -205,3 +205,16 @@ class DBController:
             return "Success"
         except Exception as e:
             return "error:" + str(e)
+
+    def Userlogin(self,email,password):
+
+        #  cur = mysql.connection.cursor()
+        # email = request.get_json()['email']
+        # password = request.get_json()['password'].encode('utf-8')
+        # result = ""
+    
+        self.cursor.execute("SELECT * FROM USER where email_id = '" + str(email) + "'")
+
+        rv = self.cursor.fetchone()
+
+        return rv
