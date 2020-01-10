@@ -39,7 +39,7 @@ class DBController:
             """INSERT INTO RIDES_REQUESTED (RIDE_ID,EVENT_ID,USERNAME,STATUS) VALUES(%s,%s,%s,%s)""",
             (RideID, eventID, userID, status),
         )
-        self.mysql.connection.commit()
+        self.mysql.commit()
         print("Data Saved!")
 
     def updateRequest(
@@ -49,7 +49,7 @@ class DBController:
             """UPDATE RIDES_REQUESTED SET STATUS=%s WHERE REQUEST_ID=%s""",
             (status, requestId),
         )
-        self.mysql.connection.commit()
+        self.mysql.commit()
         self.cursor.execute(
             "SELECT STATUS FROM REQUESTS WHERE REQUEST_ID=%s" % (requestId)
         )
@@ -137,7 +137,7 @@ class DBController:
                         data["email"],
                     )
                 )
-                self.mysql.connection.commit()
+                self.mysql.commit()
                 return "Success"
         except Exception as e:
             return "error:" + str(e)
@@ -148,6 +148,7 @@ class DBController:
             # get data from event api
             event = SGE.Seat_Geek_Api()
             eventdata = event.getEvent(data["eventId"])
+            print('data', data)
 
             # append user selected time to the event date and convert it to datetime
             eventDate = datetime.datetime.strptime(
@@ -199,8 +200,21 @@ class DBController:
                     data["zipCode"],
                 ),
             )
-            self.mysql.connection.commit()
+            self.mysql.commit()
             print("Data Saved!")
             return "Success"
         except Exception as e:
             return "error:" + str(e)
+
+    def Userlogin(self,email,password):
+
+        #  cur = mysql.connection.cursor()
+        # email = request.get_json()['email']
+        # password = request.get_json()['password'].encode('utf-8')
+        # result = ""
+    
+        self.cursor.execute("SELECT * FROM USER where email_id = '" + str(email) + "'")
+
+        rv = self.cursor.fetchone()
+
+        return rv

@@ -5,7 +5,6 @@ import OfferRide from "../../components/OfferRideModal"
 import { useFetch } from "./Backendhooks"; //to handle fetch data request from flask
 import { useState } from "react";
 import axios from "axios";
-import Moment from "moment";
 import jwt_decode from 'jwt-decode';
 
 const Event = ({ match }) => {

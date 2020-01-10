@@ -32,9 +32,6 @@ function useFetch(eventId) {
 
     }
 
-    console.log(Rides);
-    
-
     fetchData();
 
   }, [eventId]);
