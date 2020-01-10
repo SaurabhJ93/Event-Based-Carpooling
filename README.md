@@ -1,6 +1,4 @@
-# SSDI_project
-Event based Car pooling application for SSDI
-
+# Event Based Car pooling application
 
 Backend Setup
 
