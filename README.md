@@ -1,4 +1,4 @@
-# Event Based Car pooling application - SSDI College Project
+# Event Based Car pooling application
 
 About: This is a Car pooling platform based on popular events in your vicinity. One can Request/Offer a ride based on event he/she wishes to attend.
 
